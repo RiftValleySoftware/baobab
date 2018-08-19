@@ -1,0 +1,216 @@
+    <xs:element name='things'>
+        <xs:complexType mixed="true">
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+
+                <xs:element minOccurs='0' name='count' type="xs:integer"/>
+
+                <xs:element minOccurs='0' maxOccurs='unbounded' name='value' type='b:thing_structure'/>
+
+                <xs:element minOccurs='0' name='search_location'>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element minOccurs='0' name='radius' type='xs:float'/>
+                            <xs:element minOccurs='0' name='longitude' type='xs:float'/>
+                            <xs:element minOccurs='0' name='latitude' type='xs:float'/>
+                            <xs:element minOccurs='0' name='address' type='xs:string'/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                
+                <xs:element minOccurs='0' name='ids'>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element maxOccurs='unbounded' name='value'>
+                                <xs:complexType>
+                                    <xs:simpleContent>
+                                        <xs:extension base="xs:integer">
+                                            <xs:attribute name="sequence_index" use="required" type="xs:integer"/>
+                                        </xs:extension>
+                                    </xs:simpleContent>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                
+                <xs:element minOccurs="0" name="changed_things">
+                    <xs:complexType>
+                        <xs:sequence maxOccurs="unbounded">
+                            <xs:element minOccurs="1" maxOccurs="unbounded" name="value">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                
+                                        <xs:element name="before" type="b:thing_structure"/>
+                                    
+                                        <xs:element name="after" type="b:thing_structure"/>
+                                    
+                                    </xs:sequence>
+                                    <xs:attribute name="sequence_index" type="xs:integer"/>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                
+                <xs:element minOccurs="0" name="deleted_things">
+                    <xs:complexType>
+                        <xs:sequence maxOccurs="unbounded">
+                            <xs:element minOccurs="1" maxOccurs="unbounded" name="value" type="b:thing_structure"/>
+                        </xs:sequence>
+                        <xs:attribute name="sequence_index" type="xs:integer"/>
+                    </xs:complexType>
+                </xs:element>
+                
+                <xs:element minOccurs="1" maxOccurs="unbounded" name="new_thing" type="b:thing_structure"/>
+
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name='thing_structure'>
+        <xs:sequence>
+            <xs:element name='id' type='xs:integer'/>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="lang" type="xs:string"/>
+            <xs:element minOccurs='0' name='coords' type='xs:string'/>
+            <xs:element minOccurs='0' name='distance_in_km' type='xs:float'/>
+            <xs:element minOccurs="0" name="read_token" type="xs:integer"/>
+            <xs:element minOccurs="0" name="write_token" type="xs:integer"/>
+            <xs:element minOccurs="0" name="last_access" type="xs:string"/>
+            <xs:element minOccurs="0" name="writeable" type="xs:integer"/>
+            <xs:element minOccurs="0" name="owner_id" type="xs:integer"/>
+            <xs:element minOccurs='0' name='latitude' type='xs:float'/>
+            <xs:element minOccurs='0' name='longitude' type='xs:float'/>
+            <xs:element minOccurs='0' name='fuzzy' type='xs:integer'/>
+            <xs:element minOccurs='0' name='raw_latitude' type='xs:float'/>
+            <xs:element minOccurs='0' name='raw_longitude' type='xs:float'/>
+            <xs:element minOccurs='0' name='fuzz_factor' type='xs:float'/>
+            <xs:element minOccurs="0" name="children">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:choice minOccurs="0" maxOccurs="unbounded">
+                    
+                            <xs:element minOccurs="0" name="people">
+                                <xs:complexType>
+                                    <xs:sequence maxOccurs="unbounded">
+                                        <xs:element minOccurs="1" maxOccurs="unbounded" name="value">
+                                            <xs:complexType mixed="true">
+                                                <xs:simpleContent>
+                                                    <xs:extension base="xs:integer">
+                                                        <xs:attribute name="sequence_index" use="required" type="xs:integer"/>
+                                                    </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                    
+                            <xs:element minOccurs="0" name="places">
+                                <xs:complexType>
+                                    <xs:sequence maxOccurs="unbounded">
+                                        <xs:element minOccurs="1" maxOccurs="unbounded" name="value">
+                                            <xs:complexType mixed="true">
+                                                <xs:simpleContent>
+                                                    <xs:extension base="xs:integer">
+                                                        <xs:attribute name="sequence_index" use="required" type="xs:integer"/>
+                                                    </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                    
+                            <xs:element minOccurs="0" name="things">
+                                <xs:complexType>
+                                    <xs:sequence maxOccurs="unbounded">
+                                        <xs:element minOccurs="1" maxOccurs="unbounded" name="value">
+                                            <xs:complexType mixed="true">
+                                                <xs:simpleContent>
+                                                    <xs:extension base="xs:integer">
+                                                        <xs:attribute name="sequence_index" use="required" type="xs:integer"/>
+                                                    </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        
+                        </xs:choice>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element minOccurs="0" name="parents">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:choice minOccurs="0" maxOccurs="unbounded">
+                    
+                            <xs:element minOccurs="0" name="people">
+                                <xs:complexType>
+                                    <xs:sequence maxOccurs="unbounded">
+                                        <xs:element minOccurs="1" maxOccurs="unbounded" name="value">
+                                            <xs:complexType mixed="true">
+                                                <xs:simpleContent>
+                                                    <xs:extension base="xs:integer">
+                                                        <xs:attribute name="sequence_index" use="required" type="xs:integer"/>
+                                                    </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                    
+                            <xs:element minOccurs="0" name="places">
+                                <xs:complexType>
+                                    <xs:sequence maxOccurs="unbounded">
+                                        <xs:element minOccurs="1" maxOccurs="unbounded" name="value">
+                                            <xs:complexType mixed="true">
+                                                <xs:simpleContent>
+                                                    <xs:extension base="xs:integer">
+                                                        <xs:attribute name="sequence_index" use="required" type="xs:integer"/>
+                                                    </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                    
+                            <xs:element minOccurs="0" name="things">
+                                <xs:complexType>
+                                    <xs:sequence maxOccurs="unbounded">
+                                        <xs:element minOccurs="1" maxOccurs="unbounded" name="value">
+                                            <xs:complexType mixed="true">
+                                                <xs:simpleContent>
+                                                    <xs:extension base="xs:integer">
+                                                        <xs:attribute name="sequence_index" use="required" type="xs:integer"/>
+                                                    </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        
+                        </xs:choice>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element minOccurs="0" name="payload_type" type="xs:string"/>
+            <xs:element minOccurs="0" name="payload" type="xs:base64Binary"/>
+            <xs:element minOccurs='0' name='key' type='xs:string'/>
+            <xs:element minOccurs='0' name='description' type='xs:string'/>
+            <xs:element minOccurs='0' name='tag2' type='xs:string'/>
+            <xs:element minOccurs='0' name='tag3' type='xs:string'/>
+            <xs:element minOccurs='0' name='tag4' type='xs:string'/>
+            <xs:element minOccurs='0' name='tag5' type='xs:string'/>
+            <xs:element minOccurs='0' name='tag6' type='xs:string'/>
+            <xs:element minOccurs='0' name='tag7' type='xs:string'/>
+            <xs:element minOccurs='0' name='tag8' type='xs:string'/>
+            <xs:element minOccurs='0' name='tag9' type='xs:string'/>
+        </xs:sequence>
+        <xs:attribute name='sequence_index' type='xs:integer'/>
+    </xs:complexType>

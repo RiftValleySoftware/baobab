@@ -1,0 +1,162 @@
+    <xs:element name='baseline'>
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element minOccurs="0" ref='b:plugins'/>
+                <xs:element minOccurs="0" ref='b:tokens'/>
+                <xs:element minOccurs="0" ref='b:people'/>
+                <xs:element minOccurs="0" ref='b:places'/>
+                <xs:element minOccurs="0" ref='b:things'/>
+                <xs:element minOccurs="0" ref='b:search_location'/>
+                <xs:element minOccurs="0" ref='b:serverinfo'/>
+                <xs:element minOccurs="0" ref='b:token'/>
+                <xs:element minOccurs="0" ref='b:id'/>
+                <xs:element minOccurs="0" ref='b:bulk_upload'/>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name='plugins'>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs='unbounded' ref='b:value'/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name='tokens'>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs='unbounded' ref='b:value'/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name='people'>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs='unbounded' ref='b:value'/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name='places'>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs='unbounded' ref='b:value'/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name='things'>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs='unbounded' ref='b:value'/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name='value'>
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base='xs:NMTOKEN'>
+                    <xs:attribute name='sequence_index' use='required' type='xs:integer'/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name='search_location'>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs='0' name='radius' type='xs:float'/>
+                <xs:element minOccurs='0' name='longitude' type='xs:float'/>
+                <xs:element minOccurs='0' name='latitude' type='xs:float'/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name='bulk_upload'>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs='unbounded' name='value'>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name='input_id' type='xs:integer'/>
+                            <xs:element name='access_class' type='xs:string'/>
+                            <xs:element name='output_id' type='xs:integer'/>
+                        </xs:sequence>
+                        <xs:attribute name='sequence_index' use='required' type='xs:integer'/>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name='serverinfo'>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs='0' name='basalt_version' type='xs:string'/>
+                <xs:element minOccurs='0' name='andisol_version' type='xs:string'/>
+                <xs:element minOccurs='0' name='cobra_version' type='xs:string'/>
+                <xs:element minOccurs='0' name='chameleon_version' type='xs:string'/>
+                <xs:element minOccurs='0' name='badger_version' type='xs:string'/>
+                <xs:element minOccurs='0' name='security_db_type' type='xs:string'/>
+                <xs:element minOccurs='0' name='data_db_type' type='xs:string'/>
+                <xs:element minOccurs='0' name='lang' type='xs:string'/>
+                <xs:element minOccurs='0' name='min_pw_length' type='xs:integer'/>
+                <xs:element minOccurs='0' name='regular_timeout_in_seconds' type='xs:integer'/>
+                <xs:element minOccurs='0' name='god_timeout_in_seconds' type='xs:integer'/>
+                <xs:element minOccurs='0' name='block_repeated_logins' type='xs:integer'/>
+                <xs:element minOccurs='0' name='block_differing_ip_address' type='xs:integer'/>
+                <xs:element minOccurs='0' name='ssl_requirement_level' type='xs:integer'/>
+                <xs:element minOccurs='0' name='google_api_key' type='xs:string'/>
+                <xs:element minOccurs='0' name='allow_address_lookup' type='xs:integer'/>
+                <xs:element minOccurs='0' name='allow_general_address_lookup' type='xs:integer'/>
+                <xs:element minOccurs='0' name='default_region_bias' type='xs:string'/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name='login_ids'>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs='unbounded' ref='b:value'/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name='read_login_ids'>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs='unbounded' ref='b:value'/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name='write_login_ids'>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs='unbounded' ref='b:value'/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name='token'>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs='0' name='token' type='xs:integer'/>
+                <xs:element minOccurs='0' ref='b:login_ids'/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name='id'>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name='id' type='xs:integer'/>
+                <xs:element minOccurs='0' name='writeable' type='xs:integer'/>
+                <xs:element minOccurs='0' ref='b:read_login_ids'/>
+                <xs:element minOccurs='0' ref='b:write_login_ids'/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
