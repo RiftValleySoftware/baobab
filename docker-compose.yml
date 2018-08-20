@@ -1,0 +1,29 @@
+version: '3.1'
+
+services:
+    mysql:
+        image: mysql:5.7
+        restart: always
+        ports:
+            - 3307:3306
+        environment:
+            MYSQL_ROOT_PASSWORD: example
+            MYSQL_DATABASE: littlegreen_badger_data
+            MYSQL_DATABASE: littlegreen_badger_security
+            MYSQL_USER: littlegreen_badg
+            MYSQL_PASSWORD: pnpbxI1aU0L(
+
+    baobab:
+        build: .
+        image: baobab
+        container_name: baobab
+        restart: always
+        ports:
+            - 8080:80
+            - 7443:443
+        environment:
+            VIRTUAL_HOST: localhost
+            MYSQL_ROOT_PASSWORD: example
+        volumes:
+            - ./:/var/www/html/
+            - ../../baobab_config:/var/baobab_config/
