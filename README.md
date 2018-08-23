@@ -284,7 +284,7 @@ LOCATION OBFUSCATION
 --------------------
 It is also possible to [obfuscate](https://en.wikipedia.org/wiki/Location_obfuscation) each location by a given distance, in Kilometers. If this is done, then the precise location will not be returned when the record is queried. Instead, a randomized long/lat will be returned. If the resource's actual location falls within the search radius, then it will be returned, but the long/lat will be different, and could actually be outside the requested radius.
 
-This is a common practice for security, allowing a degree of privacy or security to people or institutions (think battered women's shelters, which often have confidential locations).
+This is a common practice for security, allowing a degree of privacy or security to people or institutions (think women's shelters, which often have confidential locations).
 
 AGGREGATORS
 ===========
