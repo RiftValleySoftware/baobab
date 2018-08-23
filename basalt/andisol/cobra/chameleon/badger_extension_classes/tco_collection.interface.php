@@ -456,16 +456,18 @@ trait tCO_Collection {
         $ret = false;
         
         $children = $this->children();
-
-        foreach ($children as $object) {
-            if ($object == $in_element) {
-                $ret = true;
-                break;
-            } else {
-                if ($full_hierachy && method_exists($object, 'areYouMyDaddy')) {
-                    if ($object->areYouMyDaddy($in_element)) {
-                        $ret = true;
-                        break;
+        
+        if (isset($children) && is_array($children) && count($children)) {
+            foreach ($children as $object) {
+                if ($object == $in_element) {
+                    $ret = true;
+                    break;
+                } else {
+                    if ($full_hierachy && method_exists($object, 'areYouMyDaddy')) {
+                        if ($object->areYouMyDaddy($in_element)) {
+                            $ret = true;
+                            break;
+                        }
                     }
                 }
             }

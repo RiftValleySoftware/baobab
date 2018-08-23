@@ -1621,7 +1621,7 @@ class CO_people_Basalt_Plugin extends A_CO_Basalt_Plugin {
                 $userlist = $in_andisol_instance->get_all_users();
             }
             
-            if (0 < count($userlist)) {
+            if (isset($userlist) && is_array($userlist) && count($userlist)) {
                 foreach ($userlist as $user) {
                     if (isset($user) && ($user instanceof CO_User_Collection) && (!$writeable || $user->user_can_write())) {
                         if (!$login_user || ($login_user && $user->has_login())) {

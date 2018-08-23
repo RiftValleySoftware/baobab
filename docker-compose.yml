@@ -1,17 +1,16 @@
 version: '3.1'
 
 services:
-    mysql:
+    db:
         image: mysql:5.7
+        container_name: db
         restart: always
         ports:
-            - 3307:3306
+            - 13306:3306
         environment:
             MYSQL_ROOT_PASSWORD: example
-            MYSQL_DATABASE: littlegreen_badger_data
-            MYSQL_DATABASE: littlegreen_badger_security
-            MYSQL_USER: littlegreen_badg
-            MYSQL_PASSWORD: pnpbxI1aU0L(
+        volumes:
+            - ./config/:/docker-entrypoint-initdb.d/
 
     baobab:
         build: .
@@ -21,8 +20,11 @@ services:
         ports:
             - 8080:80
             - 7443:443
+        depends_on:
+            - db
+        links:
+            - db
         environment:
-            VIRTUAL_HOST: localhost
             MYSQL_ROOT_PASSWORD: example
         volumes:
             - ./:/var/www/html/
