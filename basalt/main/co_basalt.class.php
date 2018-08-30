@@ -474,7 +474,9 @@ class CO_Basalt extends A_CO_Basalt_Plugin {
                     $class_name = $in_andisol_instance->get_data_access_class_by_id($id);
                     if ($class_name) {
                         $handler = self::_get_handler($class_name);
-                        $ret[$handler][] = $id;
+                        if ($handler) {
+                            $ret[$handler][] = $id;
+                        }
                     }
                 }
             }
