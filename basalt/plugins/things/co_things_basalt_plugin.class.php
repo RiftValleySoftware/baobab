@@ -104,7 +104,7 @@ class CO_things_Basalt_Plugin extends A_CO_Basalt_Plugin {
             $parameters['key'] = $thing_key;    // The resource specification always beats anything passed in.
         }
         
-        if ($in_andisol_instance->logged_in() && isset($parameters['payload']) && isset($parameters['key']) && $parameters['key'] && (false === strpos(',', $parameters['key']))) {    // Must be logged in to POST, and we can't have commas in the key.
+        if ($in_andisol_instance->logged_in() && isset($parameters['payload']) && isset($parameters['key']) && $parameters['key'] && (false === strpos($parameters['key'], ','))) {    // Must be logged in to POST, and we can't have commas in the key.
             if (!$in_andisol_instance->key_is_unique($parameters['key'])) {
                 header('HTTP/1.1 400 Invalid Key');
                 exit();

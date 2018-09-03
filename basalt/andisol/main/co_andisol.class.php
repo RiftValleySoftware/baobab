@@ -13,7 +13,7 @@
 */
 defined( 'LGV_ANDISOL_CATCHER' ) or die ( 'Cannot Execute Directly' );	// Makes sure that this file is in the correct context.
 
-define('__ANDISOL_VERSION__', '1.0.0.2007');
+define('__ANDISOL_VERSION__', '1.0.0.3000');
 
 if (!defined('LGV_ACCESS_CATCHER')) {
     define('LGV_ACCESS_CATCHER', 1);
@@ -701,6 +701,7 @@ class CO_Andisol {
                 } else {
                     $login_item = $this->get_cobra_instance()->create_new_standard_login($in_login_string_id, $in_password, $in_security_tokens);
                 }
+                
                 // Make sure we got what we expect.
                 if ($login_item instanceof CO_Security_Login) {
                     // Next, set the display name.

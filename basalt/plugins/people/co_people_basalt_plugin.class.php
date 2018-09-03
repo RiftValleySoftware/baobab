@@ -209,16 +209,24 @@ class CO_people_Basalt_Plugin extends A_CO_Basalt_Plugin {
             $is_numeric = array_reduce($login_id_list, function($carry, $item){ return $carry && ctype_digit($item); }, true);
             
             $login_id_list = $is_numeric ? array_map('intval', $login_id_list) : $login_id_list;
-            
-            foreach ($login_id_list as $id) {
-                if (($is_numeric && (0 < $id)) || !$is_numeric) {
-                    $login_instance = $is_numeric ? $in_andisol_instance->get_login_item($id) : $in_andisol_instance->get_login_item_by_login_string($id);
-                    if (isset($login_instance) && ($login_instance instanceof CO_Security_Login) && (!$writeable || $login_instance->user_can_write())) {
-                        if (!$logged_in || ($logged_in && $login_instance->get_api_key())) { // See if they are filtering for logins.
-                            if ($show_details) {
-                                $ret[] = $this->_get_long_description($login_instance);
-                            } else {
-                                $ret[] = $this->_get_short_description($login_instance);
+            // A manager can ask for a "test" of a single login, to see if it is in use (regardless of whether or not they have view rights).
+            if (!$is_numeric && (1 == count($login_id_list)) && trim($login_id_list[0]) && isset($in_query) && is_array($in_query) && (3 == count($in_query)) && isset($in_query['test']) && $in_query['test'] && $in_andisol_instance->manager()) {
+                if ($in_andisol_instance->get_chameleon_instance()->check_login_exists_by_login_string(trim($login_id_list[0]))) {
+                    $ret = ['login_exists' => true];
+                } else {
+                    $ret = ['login_exists' => false];
+                }
+            } else {
+                foreach ($login_id_list as $id) {
+                    if (($is_numeric && (0 < $id)) || !$is_numeric) {
+                        $login_instance = $is_numeric ? $in_andisol_instance->get_login_item($id) : $in_andisol_instance->get_login_item_by_login_string($id);
+                        if (isset($login_instance) && ($login_instance instanceof CO_Security_Login) && (!$writeable || $login_instance->user_can_write())) {
+                            if (!$logged_in || ($logged_in && $login_instance->get_api_key())) { // See if they are filtering for logins.
+                                if ($show_details) {
+                                    $ret[] = $this->_get_long_description($login_instance);
+                                } else {
+                                    $ret[] = $this->_get_short_description($login_instance);
+                                }
                             }
                         }
                     }

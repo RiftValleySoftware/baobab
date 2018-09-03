@@ -20,6 +20,7 @@ class CO_ANDISOL_Lang {
     static  $andisol_error_name_user_not_authorized = 'User Not Authorized';
     static  $andisol_error_desc_user_not_authorized = 'This user is not Authorized to Perform This Operation';
     static  $andisol_error_name_login_instance_failed_to_initialize = 'Login Failed to Initialize';
+    static  $andisol_error_desc_login_instance_failed_to_initialize = 'The server was unable to create the requested login resource.';
     static  $andisol_error_name_login_instance_unavailable = 'Login Not Available';
     static  $andisol_error_desc_login_instance_unavailable = 'The requested login item was not available.';
     static  $andisol_error_name_user_instance_unavailable = 'User Not Available';

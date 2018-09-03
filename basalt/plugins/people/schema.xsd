@@ -75,6 +75,8 @@
                     <xs:complexType mixed="true">
                         <xs:choice minOccurs="0" maxOccurs="unbounded">
                     
+                            <xs:element minOccurs="0" name="login_exists" type="xs:integer"/>
+                            
                             <xs:element minOccurs="0" maxOccurs="1" name="my_info" type="b:login_structure"/>
                         
                             <xs:element minOccurs="0" maxOccurs="1" name="new_login" type="b:login_structure"/>

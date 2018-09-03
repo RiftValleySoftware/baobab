@@ -13,7 +13,7 @@
 */
 defined( 'LGV_ACCESS_CATCHER' ) or die ( 'Cannot Execute Directly' );	// Makes sure that this file is in the correct context.
 
-define('__CHAMELEON_VERSION__', '1.0.0.2033');
+define('__CHAMELEON_VERSION__', '1.0.0.3000');
 
 require_once(CO_Config::badger_main_class_dir().'/co_access.class.php');
 
