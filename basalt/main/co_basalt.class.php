@@ -13,7 +13,7 @@
 */
 defined( 'LGV_BASALT_CATCHER' ) or die ( 'Cannot Execute Directly' );	// Makes sure that this file is in the correct context.
 
-define('__BASALT_VERSION__', '1.0.0.3000');
+define('__BASALT_VERSION__', '1.0.0.3001');
 
 if (!defined('LGV_ACCESS_CATCHER')) {
     define('LGV_ACCESS_CATCHER', 1);
@@ -821,7 +821,7 @@ class CO_Basalt extends A_CO_Basalt_Plugin {
         $this->_andisol_instance = NULL;
         try {
             // IIS puts "off" in the HTTPS field, so we need to test for that.
-            $https = ((!empty ( $_SERVER['HTTPS'] ) && (($_SERVER['HTTPS'] !== 'off') || ($port == 443)))) ? true : false;
+            $https = ((!empty($_SERVER['HTTPS']) && (($_SERVER['HTTPS'] !== 'off') || (intval($_SERVER['SERVER_PORT']) == 443)))) ? true : false;
             if ((CO_CONFIG_HTTPS_ALL > CO_Config::$ssl_requirement_level) || $https) {
                 $this->_process_basalt_parameters();
 
