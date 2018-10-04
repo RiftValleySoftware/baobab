@@ -146,7 +146,7 @@ class CO_things_Basalt_Plugin extends A_CO_Basalt_Plugin {
     \returns an associative array, with the "raw" response.
      */
     protected function _process_thing_get(  $in_andisol_instance,           ///< REQUIRED: The ANDISOL instance to use as the connection to the RVP databases.
-                                            $in_object_list = [],           ///< OPTIONAL: This function is worthless without at least one object. This will be an array of place objects, holding the places to examine.
+                                            $in_object_list = [],           ///< OPTIONAL: This function is worthless without at least one object. This will be an array of thing objects, holding the things to examine.
                                             $in_data_only = false,          ///< OPTIONAL: If true (default is false), then the resulting record will be returned in pure data format.
                                             $in_show_details = false,       ///< OPTIONAL: If true (default is false), then the resulting record will be returned in "detailed" format.
                                             $in_show_parents = false,       ///< OPTIONAL: (Default is false). If true, then the parents will be shown. This can be a time-consuming operation, so it needs to be explicitly requested.
@@ -191,7 +191,7 @@ class CO_things_Basalt_Plugin extends A_CO_Basalt_Plugin {
     \returns an associative array, with the "raw" response.
      */
     protected function _process_thing_delete(   $in_andisol_instance,       ///< REQUIRED: The ANDISOL instance to use as the connection to the RVP databases.
-                                                $in_object_list = [],       ///< OPTIONAL: This function is worthless without at least one object. This will be an array of place objects, holding the places to delete.
+                                                $in_object_list = [],       ///< OPTIONAL: This function is worthless without at least one object. This will be an array of thing objects, holding the things to delete.
                                                 $in_show_parents = false    ///< OPTIONAL: (Default is false). If true, then the parents will be shown. This can be a time-consuming operation, so it needs to be explicitly requested.
                                             ) {
         $ret = [];

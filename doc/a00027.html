@@ -182,7 +182,7 @@ BAOBAB Server and The Rift Valley Platform</div></div>
 <pre class="fragment">{GET} http[s]://example.com/entrypoint.php/{json|xml}/people/logins/&lt;LOGIN ID STRING&gt;?test
 </pre><p>Can only be called by managers. This tests to see if a given login string is in use (Remember that they need to be unique to the system). It returns true, if it is (even if the manager is not authorized to see the login). The response does not contain the tested login (for security reasons).</p>
 <h2>SEARCH PARAMETERS </h2>
-<p><b>NOTE:</b> These searches are only applicable to GET. They will not be usable in PUT of DELETE calls. They are also only applicable to <code>people</code> objects (users, not logins).</p>
+<p><b>NOTE:</b> These searches are only applicable to GET. They will not be usable in PUT or DELETE calls. They are also only applicable to <code>people</code> objects (users, not logins).</p>
 <p><b>Locality Radius Searches</b> All three of these must be used together. If you specify them, then any place resources that have a long/lat that falls within the radius will be returned. Resources without long/lat will not be returned.</p>
 <ul>
 <li><p class="startli"><code>search_longitude=</code></p>
