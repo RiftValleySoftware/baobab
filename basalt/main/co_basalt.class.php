@@ -3,17 +3,28 @@
 /**
     BASALT Extension Layer
     
-    © Copyright 2018, Little Green Viper Software Development LLC.
+    © Copyright 2018, Little Green Viper Software Development LLC/The Great Rift Valley Software Company
     
-    This code is proprietary and confidential code, 
-    It is NOT to be reused or combined into any application,
-    unless done so, specifically under written license from Little Green Viper Software Development LLC.
+    LICENSE:
+    
+    FOR OPEN-SOURCE (COMMERCIAL OR FREE):
+    This code is released as open source under the GNU Plublic License (GPL), Version 3.
+    You may use, modify or republish this code, as long as you do so under the terms of the GPL, which requires that you also
+    publish all modificanions, derivative products and license notices, along with this code.
+    
+    UNDER SPECIAL LICENSE, DIRECTLY FROM LITTLE GREEN VIPER OR THE GREAT RIFT VALLEY SOFTWARE COMPANY:
+    It is NOT to be reused or combined into any application, nor is it to be redistributed, republished or sublicensed,
+    unless done so, specifically WITH SPECIFIC, WRITTEN PERMISSION from Little Green Viper Software Development LLC,
+    or The Great Rift Valley Software Company.
+
+    Little Green Viper Software Development: https://littlegreenviper.com
+    The Great Rift Valley Software Company: https://riftvalleysoftware.com
 
     Little Green Viper Software Development: https://littlegreenviper.com
 */
 defined( 'LGV_BASALT_CATCHER' ) or die ( 'Cannot Execute Directly' );	// Makes sure that this file is in the correct context.
 
-define('__BASALT_VERSION__', '1.0.0.3001');
+define('__BASALT_VERSION__', '1.0.0.3002');
 
 if (!defined('LGV_ACCESS_CATCHER')) {
     define('LGV_ACCESS_CATCHER', 1);
@@ -36,6 +47,8 @@ define('_PLUGIN_NAME_', 'baseline');
 
 /****************************************************************************************************************************/
 /**
+ BASALT is the principal "interface" class for BAOBAB. It can be extended by writing simple PHP "plugins," and comes with
+ four "default" ones: "people", "places" and "things". "baseline" is a "host" pseudo-plugin.
  */
 class CO_Basalt extends A_CO_Basalt_Plugin {
     protected   $_andisol_instance; ///< This contains the instance of ANDISOL used by this instance.
@@ -406,11 +419,11 @@ class CO_Basalt extends A_CO_Basalt_Plugin {
     
     \returns the HTTP response intermediate state, as an associative array.
      */
-    protected function _process_serverinfo_command(  $in_andisol_instance,   ///< REQUIRED: The ANDISOL instance to use as the connection to the RVP databases (ignored).
-                                                $in_http_method,        ///< REQUIRED: 'GET' or 'POST' are the only allowed values.
-                                                $in_path = [],          ///< OPTIONAL: The REST path, as an array of strings. For the baseline, this should be exactly one element.
-                                                $in_query = []          ///< OPTIONAL: The query parameters, as an associative array.
-                                                ) {
+    protected function _process_serverinfo_command( $in_andisol_instance,   ///< REQUIRED: The ANDISOL instance to use as the connection to the RVP databases (ignored).
+                                                    $in_http_method,        ///< REQUIRED: 'GET' or 'POST' are the only allowed values.
+                                                    $in_path = [],          ///< OPTIONAL: The REST path, as an array of strings. For the baseline, this should be exactly one element.
+                                                    $in_query = []          ///< OPTIONAL: The query parameters, as an associative array.
+                                                    ) {
         $ret = NULL;
         if ($in_andisol_instance->god()) {    // We also have to be logged in as God to have any access to serverinfo.
             $ret = ['serverinfo' => []];
@@ -480,7 +493,7 @@ class CO_Basalt extends A_CO_Basalt_Plugin {
                     }
                 }
             }
-        } elseif (('visibility' == $in_command) /*&& isset($in_path[0]) && trim($in_path[0])*/ && $in_andisol_instance->logged_in()) {
+        } elseif (('visibility' == $in_command) && $in_andisol_instance->logged_in()) {
             if ('token' == trim($in_path[0])) {
                 $token = intval(trim($in_path[1]));
                 if ((0 <= $token) && $in_andisol_instance->get_chameleon_instance()->i_have_this_token($token)) {
