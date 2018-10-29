@@ -24,7 +24,7 @@
 */
 defined( 'LGV_ACCESS_CATCHER' ) or die ( 'Cannot Execute Directly' );	// Makes sure that this file is in the correct context.
 
-define('__COBRA_VERSION__', '1.0.0.3000');
+define('__COBRA_VERSION__', '1.0.0.3001');
 
 require_once(CO_Config::chameleon_main_class_dir().'/co_chameleon.class.php');
 
@@ -106,7 +106,7 @@ class CO_Cobra {
         
         if (isset($in_login_id) && !$this->_chameleon_instance->check_login_exists_by_login_string($in_login_id)) {
             $manager = $this->_chameleon_instance->get_login_item();
-            if ($manager instanceof CO_Login_Manager) { // Make sure we are a login manager, first.
+            if ($manager instanceof CO_Login_Manager || $manager->is_god()) { // Make sure we are a login manager, first.
                 $use_these_ids = Array();
                 // Next, see if they provided IDs. If so, we remove any that we don't own.
                 if (isset($in_security_token_ids) && is_array($in_security_token_ids) && count($in_security_token_ids)) {
@@ -135,7 +135,9 @@ class CO_Cobra {
                             $new_login_object = NULL;
                         } else {
                             $new_id = $new_login_object->id();
-                            $manager->add_new_login_id($new_id);
+                            if (method_exists($manager, 'add_new_login_id')) {
+                                $manager->add_new_login_id($new_id);
+                            }
                             if ($new_login_object->set_read_security_id($new_id)) {
                                 if ($new_login_object->set_write_security_id($new_id)) {
                                     $new_ids = [];
