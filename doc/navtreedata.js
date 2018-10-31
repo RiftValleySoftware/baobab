@@ -24,17 +24,13 @@ for the JavaScript code in this file
 var NAVTREE =
 [
   [ "BAOBAB REST API", "index.html", [
-    [ "THE BAOBAB SERVER", "index.html", null ],
-    [ "BASELINE", "a00026.html", null ],
-    [ "PEOPLE", "a00027.html", null ],
-    [ "PLACES", "a00028.html", null ],
-    [ "THINGS", "a00029.html", null ]
+    [ "APIREADME", "a00008.html", null ]
   ] ]
 ];
 
 var NAVTREEINDEX =
 [
-"a00026.html"
+"a00008.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
