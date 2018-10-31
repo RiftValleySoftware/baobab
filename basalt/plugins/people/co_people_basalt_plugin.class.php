@@ -366,9 +366,10 @@ class CO_people_Basalt_Plugin extends A_CO_Basalt_Plugin {
         
         $lang = NULL;
         $name = NULL;
-        $read_token = 0;
+        $read_token = nil;
         
         if ($in_andisol_instance->manager()) {  // Must be a manager
+            $write_token = nil;
             $is_manager = isset($in_query) && is_array($in_query) && isset($in_query['is_manager']);
             if (isset($in_query['is_manager'])) {
                 unset($in_query['is_manager']);
@@ -403,6 +404,10 @@ class CO_people_Basalt_Plugin extends A_CO_Basalt_Plugin {
                     $read_token = intval($params['read_token']);
                 }
         
+                if (isset($params['write_token']) && intval($params['write_token'])) {
+                    $write_token = intval($params['write_token']);
+                }
+        
                 $result = true;
             
                 $cobra_instance = $in_andisol_instance->get_cobra_instance();
@@ -431,17 +436,26 @@ class CO_people_Basalt_Plugin extends A_CO_Basalt_Plugin {
                         
                         $id = $new_login->id();
                         
+                        // If we did not have a name sent in, then we simply use the login ID.
                         if ($result && $name) {
                             $result = $new_login->set_name($name);
                         } elseif ($result) {
                             $result = $new_login->set_name($login_string);
                         }
-            
+                
                         if (!$result) {
                             header('HTTP/1.1 400 Error Creating Login');
                             exit();
                         }
-                
+                        // See if we explicitly set security tokens.
+                        if (isset($read_token)) {
+                            $new_login->set_read_security_id($read_token);
+                        }
+                        
+                        if (isset($write_token)) {
+                            $new_login->set_write_security_id($write_token);
+                        }
+                        
                         $ret = Array('new_login' => $this->_get_long_description($new_login));
                         $ret['new_login']['password'] = $password;
                     }
@@ -1354,7 +1368,8 @@ class CO_people_Basalt_Plugin extends A_CO_Basalt_Plugin {
         if (isset($user) && ($user instanceof CO_User_Collection)) {
             $in_path[] = $user->id();
             $result = $this->_handle_edit_people_put($in_andisol_instance, $in_login_user, $in_path, $in_query);
-            
+            // We fetch the user we just modified, so we get all the changes.
+            $user = $in_andisol_instance->get_single_data_record_by_id($user->id());
             $ret = Array('new_user' => $this->_get_long_user_description($user, true));
             
             if ($in_login_user && isset($password)) {
