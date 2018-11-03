@@ -3,7 +3,7 @@
 /**
     BASALT Extension Layer
     
-    © Copyright 2018, Little Green Viper Software Development LLC/The Great Rift Valley Software Company
+    © Copyright 2018, The Great Rift Valley Software Company
     
     LICENSE:
     
@@ -22,7 +22,7 @@
     CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-    Little Green Viper Software Development: https://littlegreenviper.com
+    The Great Rift Valley Software Company: https://riftvalleysoftware.com
 */
 // This won't work unless the config file is active.
 if (class_exists('CO_Config')) {
