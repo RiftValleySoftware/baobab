@@ -26,7 +26,7 @@
 */
 defined( 'LGV_BASALT_CATCHER' ) or die ( 'Cannot Execute Directly' );	// Makes sure that this file is in the correct context.
 
-define('__BASALT_VERSION__', '1.0.0.3003');
+define('__BASALT_VERSION__', '1.0.0.3004');
 
 if (!defined('LGV_ACCESS_CATCHER')) {
     define('LGV_ACCESS_CATCHER', 1);
@@ -546,6 +546,8 @@ class CO_Basalt extends A_CO_Basalt_Plugin {
                     exit();
                 }
             }
+        } elseif ('version' == $in_command) {
+            $ret['version'] = __BASALT_VERSION__;
         } elseif ('search' == $in_command) {
             // For a location search, all three of these need to be specified, and radius needs to be nonzero.
             $radius = isset($in_query) && is_array($in_query) && isset($in_query['search_radius']) && (0.0 < floatval($in_query['search_radius'])) ? floatval($in_query['search_radius']) : NULL;
