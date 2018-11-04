@@ -1,0 +1,34 @@
+<map id="CO_Andisol\valid" name="CO_Andisol\valid">
+<area shape="rect" id="node2" href="$a00213.html#a5b604eff1331261b2de82f887f2aeb46" title="CO_Andisol\\get_object\l_for_key" alt="" coords="177,83,335,121"/>
+<area shape="rect" id="node3" href="$a00213.html#ae74e9ff0b94457bbfb80eb93b2f5ade5" title="CO_Andisol\\get_value\l_for_key" alt="" coords="179,145,333,184"/>
+<area shape="rect" id="node4" href="$a00213.html#ac2a2dcb99dc927789b0ffa09c24946de" title="CO_Andisol\\logged_in" alt="" coords="179,208,333,233"/>
+<area shape="rect" id="node5" href="$a00213.html#a190232857416d5f1e7033452ac1bf6c0" title="CO_Andisol\\_create\l_db_object" alt="" coords="404,55,544,93"/>
+<area shape="rect" id="node13" href="$a00213.html#a3211db47dc4bd5f77983aedc341c0805" title="CO_Andisol\\delete_item\l_by_id" alt="" coords="392,117,557,156"/>
+<area shape="rect" id="node14" href="$a00213.html#a24cb5350928f501bb7567b6b9d7b20cd" title="CO_Andisol\\get_login_item" alt="" coords="383,180,566,205"/>
+<area shape="rect" id="node16" href="$a00213.html#a05d1a595153707e3c6f232ba9f766124" title="CO_Andisol\\get_login\l_item_by_login_string" alt="" coords="399,229,550,268"/>
+<area shape="rect" id="node18" href="$a00213.html#af5f39aa13714ad544a9099edb0d51cd5" title="CO_Andisol\\manager" alt="" coords="400,420,549,445"/>
+<area shape="rect" id="node32" href="$a00213.html#a9e01279d8bb11cb25f5477bb75123cba" title="CO_Andisol\\set_value\l_for_key" alt="" coords="397,577,551,616"/>
+<area shape="rect" id="node6" href="$a00213.html#a1783b1403b768959f80f17b08a5e8f82" title="CO_Andisol\\create_general\l_data_item" alt="" coords="638,55,824,93"/>
+<area shape="rect" id="node7" href="$a00213.html#a1432efeebcc0952a1236feec7bbceb13" title="CO_Andisol\\create_collection" alt="" coords="896,5,1093,31"/>
+<area shape="rect" id="node8" href="$a00213.html#a24b15c45e28b5a0fb4971c11b4e5ed99" title="CO_Andisol\\create_ll\l_location" alt="" coords="921,55,1068,93"/>
+<area shape="rect" id="node9" href="$a00213.html#a79103b0d231d1dcc1f7c1921e5118621" title="CO_Andisol\\create_place" alt="" coords="908,117,1081,143"/>
+<area shape="rect" id="node10" href="$a00213.html#a58956fb178766e8d0074dcb138d1e650" title="CO_Andisol\\create_ll\l_place" alt="" coords="1154,48,1300,87"/>
+<area shape="rect" id="node11" href="$a00213.html#a5f26c529c4b6d41367241db17d114fb5" title="CO_Andisol\\create_ll\l_us_place" alt="" coords="1154,111,1300,149"/>
+<area shape="rect" id="node12" href="$a00213.html#a492fc0036d5930c325ed14bfcdd5938a" title="CO_Andisol\\create_place\l_collection" alt="" coords="1141,173,1313,212"/>
+<area shape="rect" id="node15" href="$a00213.html#afa726783f29cadc795d892eb9f825fa1" title="CO_Andisol\\current\l_login" alt="" coords="662,144,800,183"/>
+<area shape="rect" id="node17" href="$a00213.html#a7d4be5fe8eb59e59a6ca94a781980e4f" title="CO_Andisol\\get_user\l_from_login_string" alt="" coords="920,201,1069,240"/>
+<area shape="rect" id="node19" href="$a00213.html#a737ba5cc859a773ab48d09f365fbb4b6" title="CO_Andisol\\_make_security\l_token" alt="" coords="636,469,826,508"/>
+<area shape="rect" id="node21" href="$a00213.html#afe9a7dd6ab7e39f73345fa5ecbb177a7" title="CO_Andisol\\create_new_user" alt="" coords="632,532,830,557"/>
+<area shape="rect" id="node22" href="$a00213.html#aa4f45eb1ec9c5acc7709cfd9b08348f3" title="CO_Andisol\\delete_user" alt="" coords="648,581,814,607"/>
+<area shape="rect" id="node23" href="$a00213.html#ae0e62c8ade9295c9b5a2d3b725f8f222" title="CO_Andisol\\get_all\l_logins" alt="" coords="663,631,799,669"/>
+<area shape="rect" id="node24" href="$a00213.html#a61b9a275c4b8b824d9a2b3aadd421bf7" title="CO_Andisol\\get_user\l_from_login" alt="" coords="657,259,805,297"/>
+<area shape="rect" id="node26" href="$a00213.html#a370ab6e2bb53c900f25a6005d0e5077d" title="CO_Andisol\\god" alt="" coords="672,321,790,347"/>
+<area shape="rect" id="node30" href="$a00213.html#a73ccfd34793c0197e2dc336b44e3577e" title="CO_Andisol\\make_standalone_user" alt="" coords="614,371,848,396"/>
+<area shape="rect" id="node31" href="$a00213.html#a4a99f9757a91355dd3aca720dcf5a770" title="CO_Andisol\\who_can_see" alt="" coords="642,420,820,445"/>
+<area shape="rect" id="node20" href="$a00213.html#ad0ac8fb3000239301a9f2be905c1a124" title="CO_Andisol\\make_security\l_token" alt="" coords="903,501,1086,540"/>
+<area shape="rect" id="node25" href="$a00213.html#a661842aaa6be17af30fbac58b5008c36" title="CO_Andisol\\current_user" alt="" coords="909,264,1080,289"/>
+<area shape="rect" id="node27" href="$a00213.html#a86bc3621ffe539ac5a9239375f0a786b" title="CO_Andisol\\get_all\l_login_users" alt="" coords="927,313,1062,352"/>
+<area shape="rect" id="node28" href="$a00213.html#acd1e344f9f0087ee41414e6aa5f13e1e" title="CO_Andisol\\get_all\l_standalone_users" alt="" coords="927,376,1062,415"/>
+<area shape="rect" id="node29" href="$a00213.html#a9d3578d72df7af2ff07e23ea7b1b1af9" title="CO_Andisol\\get_all\l_users" alt="" coords="927,439,1062,477"/>
+<area shape="rect" id="node33" href="$a00213.html#a3a2a831d4194a3ea9b933f98b4ee71f2" title="CO_Andisol\\delete_key" alt="" coords="651,693,811,719"/>
+</map>

@@ -1,0 +1,3 @@
+<map id="CO_Security_DB" name="CO_Security_DB">
+<area shape="rect" id="node2" href="$a00301.html" title="{A_CO_DB\n|+ $access_object\l+ $class_description\l+ $error\l+ $table_name\l# $_pdo_object\l# $_existing_record_objects\l|+ _instantiate_record()\l+ __construct()\l+ execute_query()\l+ get_db_backup()\l+ get_access_class_by_id()\l+ can_i_see_this_record()\l+ get_single_raw_row\l_by_id()\l+ get_single_record_by_id()\l+ get_multiple_records\l_by_id()\l+ get_all_readable_records()\l+ get_all_writeable_records()\l+ lock_record()\l+ write_record()\l+ delete_record()\l# _create_read_security\l_predicate()\l# _create_write_security\l_predicate()\l# _create_security_predicate()\l&#45; _execute_query()\l}" alt="" coords="5,5,207,425"/>
+</map>

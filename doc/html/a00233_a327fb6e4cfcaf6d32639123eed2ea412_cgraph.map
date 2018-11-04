@@ -1,0 +1,6 @@
+<map id="CO_Cobra\create_new_standard_login" name="CO_Cobra\create_new_standard_login">
+<area shape="rect" id="node2" href="$a00233.html#a7710a3275a7b2dfdba8e00a8bd2c0f61" title="CO_Cobra\\_create_new\l_login" alt="" coords="211,24,376,63"/>
+<area shape="rect" id="node3" href="$a00233.html#a0815b59b59c157227c283e260ab2576f" title="CO_Cobra\\get_security_ids" alt="" coords="424,5,609,31"/>
+<area shape="rect" id="node4" href="$a00337.html#aac538e52310a1c332914682a9c2ec8d2" title="CO_Security_Login\\is_god" alt="" coords="427,55,607,80"/>
+<area shape="rect" id="node5" href="$a00305.html#a78affe18a811930d4012fd265e95cdca" title="A_CO_DB_Table_Base\\id" alt="" coords="657,55,832,80"/>
+</map>

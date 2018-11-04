@@ -1,0 +1,11 @@
+<map id="CO_Main_DB_Record\tags" name="CO_Main_DB_Record\tags">
+<area shape="rect" id="node2" href="$a00257.html#a0828fcac351a2f23404059be980e7b41" title="CO_Place\\__construct" alt="" coords="236,5,391,31"/>
+<area shape="rect" id="node3" href="$a00273.html#a67c82465b52bc0d942c84599eb2b62ff" title="CO_User_Collection\l\\_load_login" alt="" coords="242,107,385,145"/>
+<area shape="rect" id="node5" href="$a00273.html#ac4b573bbcb37aaf83685c3fdff046bf7" title="CO_User_Collection\l\\has_login_i_cant_see" alt="" coords="630,48,784,87"/>
+<area shape="rect" id="node9" href="$a00273.html#ab94286252d62d4c374bcff2aa4305198" title="CO_User_Collection\l\\has_login" alt="" coords="242,169,385,208"/>
+<area shape="rect" id="node10" href="$a00273.html#ae7fc3a4f853b6b0ce16e5dc31df070ca" title="CO_User_Collection\l\\is_god" alt="" coords="242,232,385,271"/>
+<area shape="rect" id="node4" href="$a00273.html#a2cc75e169901df4a8fc859f42e0e9f8c" title="CO_User_Collection\l\\get_login_instance" alt="" coords="439,109,582,148"/>
+<area shape="rect" id="node8" href="$a00273.html#a38a9d15bfc7194ec0057869caf6523c0" title="CO_User_Collection\l\\is_manager" alt="" coords="439,203,582,241"/>
+<area shape="rect" id="node6" href="$a00273.html#a9041f37ce8eba7afe52a014fe3938cce" title="CO_User_Collection\l\\get_lang" alt="" coords="635,173,778,212"/>
+<area shape="rect" id="node7" href="$a00273.html#a3ae822685b2b8ca8af56d8ea4c4a2a6c" title="CO_User_Collection\l\\delete_from_db" alt="" coords="635,111,778,149"/>
+</map>

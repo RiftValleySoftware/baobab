@@ -1,0 +1,10 @@
+<map id="CO_Basalt\process_command" name="CO_Basalt\process_command">
+<area shape="rect" id="node2" href="$a00193.html#a4195fd75943d9dd1ca6dce290aa64dcc" title="A_CO_Basalt_Plugin\l\\_condition_response" alt="" coords="255,68,404,107"/>
+<area shape="rect" id="node3" href="$a00197.html#a60ce04d2fc76ab876a428500dccb7dd8" title="CO_Basalt\\_process\l_baseline_command" alt="" coords="257,131,402,169"/>
+<area shape="rect" id="node4" href="$a00197.html#a94f153fbc911e113c202f91acc1b270e" title="CO_Basalt\\_baseline\l_bulk_loader" alt="" coords="461,5,608,44"/>
+<area shape="rect" id="node6" href="$a00197.html#ad72622e9b3a834e50a1a8f4ab488b08a" title="CO_Basalt\\_baseline\l_fetch_backup" alt="" coords="461,68,608,107"/>
+<area shape="rect" id="node7" href="$a00197.html#acd909d93bf248e9b07ff9cfdd28df9b9" title="CO_Basalt\\_process\l_serverinfo_command" alt="" coords="458,131,611,169"/>
+<area shape="rect" id="node8" href="$a00197.html#af1b2c5aad7e4010614b891a8e47e469b" title="CO_Basalt\\_process\l_token_command" alt="" coords="463,193,606,232"/>
+<area shape="rect" id="node9" href="$a00197.html#a9917ca310760b3d05cdb027b030f86b4" title="CO_Basalt\\plugin_name" alt="" coords="452,256,617,281"/>
+<area shape="rect" id="node5" href="$a00197.html#a0c8258440777d1e27e88f57f55a9e2a4" title="CO_Basalt\\_process\l_bulk_row" alt="" coords="665,5,809,44"/>
+</map>

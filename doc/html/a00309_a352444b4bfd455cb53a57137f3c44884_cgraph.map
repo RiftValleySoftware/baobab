@@ -1,0 +1,5 @@
+<map id="CO_Main_Data_DB\_location_predicate" name="CO_Main_Data_DB\_location_predicate">
+<area shape="rect" id="node2" href="$a00301.html#ad2356dbed1b38898d8c17bcd8eb405ef" title="A_CO_DB\\_create_security\l_predicate" alt="" coords="250,37,435,76"/>
+<area shape="rect" id="node3" href="$a00301.html#a176b2c663fa7768e95e4fbe93281adc6" title="A_CO_DB\\_create_read\l_security_predicate" alt="" coords="483,5,649,44"/>
+<area shape="rect" id="node4" href="$a00301.html#ad4bc3d416f085818935b32a814313202" title="A_CO_DB\\_create_write\l_security_predicate" alt="" coords="483,68,650,107"/>
+</map>

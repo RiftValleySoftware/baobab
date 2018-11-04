@@ -1,0 +1,9 @@
+<map id="CO_Access\security_db_available" name="CO_Access\security_db_available">
+<area shape="rect" id="node2" href="$a00349.html#a78b40b6d7e4af9b87523b3ba8b272cee" title="CO_Access\\check_login\l_exists" alt="" coords="207,5,373,44"/>
+<area shape="rect" id="node4" href="$a00349.html#a230fb285585783de4008259505a1618e" title="CO_Access\\check_login\l_exists_by_login_string" alt="" coords="207,68,373,107"/>
+<area shape="rect" id="node5" href="$a00349.html#a2fbe1324f57f4424bc61c0338fbe589b" title="CO_Access\\get_login\l_item_by_login_string" alt="" coords="215,131,366,169"/>
+<area shape="rect" id="node6" href="$a00349.html#ae548938d26a8e1c2f5378e94d2921419" title="CO_Access\\i_have_this\l_token" alt="" coords="209,193,372,232"/>
+<area shape="rect" id="node7" href="$a00293.html#af193950805884bd481b8863ffd6d4fb1" title="CO_Chameleon\\set_value\l_for_key" alt="" coords="201,256,379,295"/>
+<area shape="rect" id="node8" href="$a00293.html#aa13745bd0d40cac3820bb3ae7f6d5fbb" title="CO_Chameleon\\test_access" alt="" coords="195,319,386,344"/>
+<area shape="rect" id="node3" href="$a00349.html#a96c5de557dbba65d1fc15f58cfd01255" title="CO_Access\\check_user\l_exists" alt="" coords="434,5,597,44"/>
+</map>

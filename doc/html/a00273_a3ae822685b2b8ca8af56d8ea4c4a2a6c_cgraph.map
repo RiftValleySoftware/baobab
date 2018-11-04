@@ -1,0 +1,8 @@
+<map id="CO_User_Collection\delete_from_db" name="CO_User_Collection\delete_from_db">
+<area shape="rect" id="node2" href="$a00277.html#a1b874768720083a8a31c9fedcee30e6d" title="tCO_Collection\\children" alt="" coords="196,5,358,31"/>
+<area shape="rect" id="node3" href="$a00273.html#a2cc75e169901df4a8fc859f42e0e9f8c" title="CO_User_Collection\l\\get_login_instance" alt="" coords="205,55,348,93"/>
+<area shape="rect" id="node7" href="$a00305.html#a7d2537d7675ca572ad78096784fe4fe4" title="A_CO_DB_Table_Base\l\\user_can_write" alt="" coords="406,116,566,155"/>
+<area shape="rect" id="node4" href="$a00273.html#a67c82465b52bc0d942c84599eb2b62ff" title="CO_User_Collection\l\\_load_login" alt="" coords="415,53,557,92"/>
+<area shape="rect" id="node5" href="$a00305.html#a8780b40e55827b90bb441671faec2a05" title="A_CO_DB_Table_Base\l\\get_access_object" alt="" coords="625,112,786,151"/>
+<area shape="rect" id="node6" href="$a00313.html#a7f4c18f2ed2bda67f3c38fd95c120c0a" title="CO_Main_DB_Record\\tags" alt="" coords="614,60,797,85"/>
+</map>

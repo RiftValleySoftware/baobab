@@ -1,0 +1,8 @@
+<map id="CO_Chameleon\set_value_for_key" name="CO_Chameleon\set_value_for_key">
+<area shape="rect" id="node2" href="$a00349.html#a18733db78e2a4cfe35c7a7a41e2f2072" title="CO_Access\\generic_search" alt="" coords="231,5,418,31"/>
+<area shape="rect" id="node3" href="$a00349.html#a2249312ed569b15e5b6b15c0112ce83b" title="CO_Access\\make_new\l_blank_record" alt="" coords="244,55,404,93"/>
+<area shape="rect" id="node7" href="$a00349.html#a22dd3ef5f47a6f4c40a551a1d7767402" title="CO_Access\\security\l_db_available" alt="" coords="254,117,395,156"/>
+<area shape="rect" id="node4" href="$a00349.html#adbc6444fbac916f3a280f4a3ce4f067a" title="CO_Access\\get_login_id" alt="" coords="466,61,633,87"/>
+<area shape="rect" id="node5" href="$a00349.html#aeab406fa4ecc249662fa1e2e073341b2" title="CO_Access\\get_single\l_security_record_by_id" alt="" coords="681,55,840,93"/>
+<area shape="rect" id="node6" href="$a00349.html#a34c23aea84d5c32e600c512167c3497d" title="CO_Access\\get_multiple\l_security_records_by_id" alt="" coords="888,55,1055,93"/>
+</map>

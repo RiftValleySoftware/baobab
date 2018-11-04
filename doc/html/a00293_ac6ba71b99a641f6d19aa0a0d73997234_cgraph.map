@@ -1,0 +1,8 @@
+<map id="CO_Chameleon\get_lang" name="CO_Chameleon\get_lang">
+<area shape="rect" id="node2" href="$a00349.html#a65c256cad68440723a8de979b1b7a1bb" title="CO_Access\\get_login_item" alt="" coords="225,9,407,35"/>
+<area shape="rect" id="node6" href="$a00293.html#a88b451020a7174eeb0c06e216ca517cf" title="CO_Chameleon\\get_user\l_from_login" alt="" coords="230,59,402,97"/>
+<area shape="rect" id="node3" href="$a00349.html#adbc6444fbac916f3a280f4a3ce4f067a" title="CO_Access\\get_login_id" alt="" coords="465,37,632,63"/>
+<area shape="rect" id="node4" href="$a00349.html#aeab406fa4ecc249662fa1e2e073341b2" title="CO_Access\\get_single\l_security_record_by_id" alt="" coords="690,5,849,44"/>
+<area shape="rect" id="node5" href="$a00349.html#a34c23aea84d5c32e600c512167c3497d" title="CO_Access\\get_multiple\l_security_records_by_id" alt="" coords="897,5,1064,44"/>
+<area shape="rect" id="node7" href="$a00349.html#a18733db78e2a4cfe35c7a7a41e2f2072" title="CO_Access\\generic_search" alt="" coords="455,87,642,112"/>
+</map>

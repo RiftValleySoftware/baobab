@@ -1,0 +1,10 @@
+<map id="CO_Main_Data_DB\_build_sql_query" name="CO_Main_Data_DB\_build_sql_query">
+<area shape="rect" id="node2" href="$a00301.html#ad2356dbed1b38898d8c17bcd8eb405ef" title="A_CO_DB\\_create_security\l_predicate" alt="" coords="492,36,677,75"/>
+<area shape="rect" id="node5" href="$a00309.html#a352444b4bfd455cb53a57137f3c44884" title="CO_Main_Data_DB\\_location\l_predicate" alt="" coords="232,93,428,132"/>
+<area shape="rect" id="node6" href="$a00309.html#a64a118564e4da8a3b0220ee5cf088e9b" title="CO_Main_Data_DB\\_parse\l_parameters" alt="" coords="238,159,422,197"/>
+<area shape="rect" id="node3" href="$a00301.html#a176b2c663fa7768e95e4fbe93281adc6" title="A_CO_DB\\_create_read\l_security_predicate" alt="" coords="741,5,907,44"/>
+<area shape="rect" id="node4" href="$a00301.html#ad4bc3d416f085818935b32a814313202" title="A_CO_DB\\_create_write\l_security_predicate" alt="" coords="740,68,908,107"/>
+<area shape="rect" id="node7" href="$a00309.html#a884b5749acdbc87467741bc6610794e4" title="CO_Main_Data_DB\\_parse\l_integer_parameter" alt="" coords="492,99,676,137"/>
+<area shape="rect" id="node8" href="$a00309.html#a46a9af2d7f6fc1388608022c6b84662e" title="CO_Main_Data_DB\\_parse\l_string_parameter" alt="" coords="492,161,676,200"/>
+<area shape="rect" id="node9" href="$a00309.html#a49c326f37d274ac9f25171380c851164" title="CO_Main_Data_DB\\_parse_tags" alt="" coords="476,224,692,249"/>
+</map>

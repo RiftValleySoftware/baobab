@@ -1,0 +1,5 @@
+<map id="CO_Cobra\delete_login" name="CO_Cobra\delete_login">
+<area shape="rect" id="node2" href="$a00233.html#a3eaa5ad2b11d99851df8f298bdbd6e47" title="CO_Cobra\\get_login\l_instance" alt="" coords="230,5,373,44"/>
+<area shape="rect" id="node3" href="$a00233.html#ad5bb2d69d9ca618b755ceb4eaba247e8" title="CO_Cobra\\get_user_from\l_login" alt="" coords="214,68,389,107"/>
+<area shape="rect" id="node4" href="$a00233.html#a7d6421cfa6abf3aa5885bfe694ee898d" title="CO_Cobra\\make_standalone_user" alt="" coords="437,75,664,100"/>
+</map>

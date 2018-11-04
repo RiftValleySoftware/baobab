@@ -1,0 +1,5 @@
+<map id="CO_Security_Login\user_can_write" name="CO_Security_Login\user_can_write">
+<area shape="rect" id="node2" href="$a00337.html#ae927630811dae37fddc34b16878c63fd" title="CO_Security_Login\\delete\l_from_db" alt="" coords="227,5,404,44"/>
+<area shape="rect" id="node3" href="$a00337.html#a061f896c69dc8a8dd3d9ee793b91ddc7" title="CO_Security_Login\\set_lang" alt="" coords="220,68,411,93"/>
+<area shape="rect" id="node4" href="$a00337.html#ac4f0c16cb8cf1e2151451bf4d5cb2238" title="CO_Security_Login\\set\l_password_from_cleartext" alt="" coords="227,117,404,156"/>
+</map>

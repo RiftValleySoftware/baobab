@@ -1,0 +1,6 @@
+<map id="CO_Chameleon\get_user_from_login" name="CO_Chameleon\get_user_from_login">
+<area shape="rect" id="node2" href="$a00349.html#a18733db78e2a4cfe35c7a7a41e2f2072" title="CO_Access\\generic_search" alt="" coords="226,5,412,31"/>
+<area shape="rect" id="node3" href="$a00349.html#adbc6444fbac916f3a280f4a3ce4f067a" title="CO_Access\\get_login_id" alt="" coords="235,55,403,80"/>
+<area shape="rect" id="node4" href="$a00349.html#aeab406fa4ecc249662fa1e2e073341b2" title="CO_Access\\get_single\l_security_record_by_id" alt="" coords="460,48,620,87"/>
+<area shape="rect" id="node5" href="$a00349.html#a34c23aea84d5c32e600c512167c3497d" title="CO_Access\\get_multiple\l_security_records_by_id" alt="" coords="668,48,835,87"/>
+</map>

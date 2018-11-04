@@ -1,0 +1,29 @@
+<map id="A_CO_DB_Table_Base\user_can_write" name="A_CO_DB_Table_Base\user_can_write">
+<area shape="rect" id="node2" href="$a00305.html#a6fa77e9fd744981d4a9d7cac37ddf1bf" title="A_CO_DB_Table_Base\l\\delete_from_db" alt="" coords="214,67,375,105"/>
+<area shape="rect" id="node3" href="$a00273.html#a3ae822685b2b8ca8af56d8ea4c4a2a6c" title="CO_User_Collection\l\\delete_from_db" alt="" coords="223,129,366,168"/>
+<area shape="rect" id="node4" href="$a00305.html#a1ed093545fa1cbc3f63a672cdf424734" title="A_CO_DB_Table_Base\l\\set_lang" alt="" coords="446,5,607,44"/>
+<area shape="rect" id="node5" href="$a00313.html#a6349c04b5a027e23f0b8bd8810579844" title="CO_Main_DB_Record\\set\l_owner_id" alt="" coords="439,68,614,107"/>
+<area shape="rect" id="node6" href="$a00313.html#a7860101403a734329dd8c1079f5d367e" title="CO_Main_DB_Record\\set\l_payload" alt="" coords="439,131,614,169"/>
+<area shape="rect" id="node7" href="$a00305.html#a3d4d1ab7910b9ccfdf8654d767e01d9b" title="A_CO_DB_Table_Base\l\\set_read_security_id" alt="" coords="446,193,607,232"/>
+<area shape="rect" id="node8" href="$a00313.html#a1f9581fbd4aa2611da866405d446295c" title="CO_Main_DB_Record\\set_tag" alt="" coords="426,655,627,680"/>
+<area shape="rect" id="node9" href="$a00273.html#a9410d46a4cd780a042c738912e11a27d" title="CO_User_Collection\l\\set_tag" alt="" coords="223,972,366,1011"/>
+<area shape="rect" id="node17" href="$a00313.html#a84074211704eba98c263bd7122cd13f7" title="CO_Main_DB_Record\\set_tags" alt="" coords="423,704,631,729"/>
+<area shape="rect" id="node19" href="$a00305.html#a55eae92ef3e2f47689019e174f29daf1" title="A_CO_DB_Table_Base\l\\set_write_security_id" alt="" coords="446,753,607,792"/>
+<area shape="rect" id="node20" href="$a00305.html#a7487697640051c6661b8cdca6f109959" title="A_CO_DB_Table_Base\l\\update_db" alt="" coords="214,396,375,435"/>
+<area shape="rect" id="node10" href="$a00273.html#a28a62f95bbfbb511f01a2b8a3eb3db6f" title="CO_User_Collection\l\\set_surname" alt="" coords="455,816,598,855"/>
+<area shape="rect" id="node11" href="$a00273.html#a4e60c1e03b490e38e441d4b8dbada19f" title="CO_User_Collection\l\\set_middle_name" alt="" coords="455,879,598,917"/>
+<area shape="rect" id="node12" href="$a00273.html#ad1254d0e49f000883944fba0b4ce670d" title="CO_User_Collection\l\\set_given_name" alt="" coords="455,941,598,980"/>
+<area shape="rect" id="node13" href="$a00273.html#adbeef6102042c2ec1530502386a275c4" title="CO_User_Collection\l\\set_prefix" alt="" coords="455,1004,598,1043"/>
+<area shape="rect" id="node14" href="$a00273.html#af4643580a79e531d9e78c75c67c21388" title="CO_User_Collection\l\\set_suffix" alt="" coords="455,1067,598,1105"/>
+<area shape="rect" id="node15" href="$a00273.html#ac70dec96610b3e89b7888a3cab6aef72" title="CO_User_Collection\l\\set_nickname" alt="" coords="455,1129,598,1168"/>
+<area shape="rect" id="node16" href="$a00273.html#a2ba17ba0df27d93adda9eb20d1249338" title="CO_User_Collection\l\\set_login" alt="" coords="455,1192,598,1231"/>
+<area shape="rect" id="node18" href="$a00257.html#a887a876b0603db0289a8bdc7ab4e66b2" title="CO_Place\\set_tags_from\l_address_elements" alt="" coords="695,697,865,736"/>
+<area shape="rect" id="node21" href="$a00325.html#a4a3ed38130b49569d494ec7c262ca32d" title="CO_Security_Node\\add_id" alt="" coords="437,256,617,281"/>
+<area shape="rect" id="node22" href="$a00337.html#a59e2e5be376349924698305603bfb51f" title="CO_Security_Login\\clear\l_api_key" alt="" coords="442,305,612,344"/>
+<area shape="rect" id="node23" href="$a00305.html#ab976e4ab55890095fc60406326b5de80" title="A_CO_DB_Table_Base\l\\clear_batch_mode" alt="" coords="446,368,607,407"/>
+<area shape="rect" id="node24" href="$a00325.html#a241314e7be52a7ca6487e41f34bb78fd" title="CO_Security_Node\\set_ids" alt="" coords="436,431,618,456"/>
+<area shape="rect" id="node26" href="$a00337.html#a061f896c69dc8a8dd3d9ee793b91ddc7" title="CO_Security_Login\\set_lang" alt="" coords="431,480,622,505"/>
+<area shape="rect" id="node27" href="$a00305.html#a92a9b9a122e9471b82dd79432bf3c929" title="A_CO_DB_Table_Base\l\\set_name" alt="" coords="446,529,607,568"/>
+<area shape="rect" id="node28" href="$a00337.html#ac4f0c16cb8cf1e2151451bf4d5cb2238" title="CO_Security_Login\\set\l_password_from_cleartext" alt="" coords="438,592,616,631"/>
+<area shape="rect" id="node25" href="$a00325.html#af852d696981829b18e29fb07918d8630" title="CO_Security_Node\\remove_id" alt="" coords="679,431,881,456"/>
+</map>

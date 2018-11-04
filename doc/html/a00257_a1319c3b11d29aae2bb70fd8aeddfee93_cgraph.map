@@ -1,0 +1,5 @@
+<map id="CO_Place\lookup_address" name="CO_Place\lookup_address">
+<area shape="rect" id="node2" href="$a00297.html#a56d54ef8e9ee5bf99897dbc4e09e7839" title="This is a function that returns the results of an HTTP call to a URI. It is a lot more secure than fi..." alt="" coords="240,5,390,44"/>
+<area shape="rect" id="node3" href="$a00257.html#ac6cd579fa87a0f4fe7e88e265722319a" title="CO_Place\\get_readable\l_address" alt="" coords="233,68,397,107"/>
+<area shape="rect" id="node4" href="$a00257.html#a60b73dee76e98e806f4a872cca13ee58" title="CO_Place\\_get_address\l_element_labels" alt="" coords="445,68,612,107"/>
+</map>

@@ -1,0 +1,12 @@
+<map id="CO_Place\_get_address_element_labels" name="CO_Place\_get_address_element_labels">
+<area shape="rect" id="node2" href="$a00257.html#ae074113629e04696f13a4e6c5316124a" title="CO_Place\\geocode_long_lat" alt="" coords="220,5,411,31"/>
+<area shape="rect" id="node3" href="$a00257.html#a0291fd7ecd95dc96d7be64516d5ce32e" title="CO_Place\\get_address\l_element_by_index" alt="" coords="236,55,395,93"/>
+<area shape="rect" id="node4" href="$a00257.html#a855be001c1b2b611e2bdea044602ec8c" title="CO_Place\\get_address\l_elements" alt="" coords="236,117,395,156"/>
+<area shape="rect" id="node5" href="$a00257.html#ac6cd579fa87a0f4fe7e88e265722319a" title="CO_Place\\get_readable\l_address" alt="" coords="234,180,397,219"/>
+<area shape="rect" id="node7" href="$a00257.html#a7b99eb196e710f9cf14ad39601e2b3ad" title="CO_Place\\set_address\l_element" alt="" coords="236,295,395,333"/>
+<area shape="rect" id="node8" href="$a00257.html#a94507f0c219ba9bc342e40d6064941db" title="CO_Place\\set_address\l_elements" alt="" coords="470,263,628,301"/>
+<area shape="rect" id="node10" href="$a00257.html#a775079ce6d7951fc6597173ac55d0218" title="CO_Place\\set_address\l_element_by_key" alt="" coords="470,339,628,377"/>
+<area shape="rect" id="node11" href="$a00257.html#a887a876b0603db0289a8bdc7ab4e66b2" title="CO_Place\\set_tags_from\l_address_elements" alt="" coords="230,409,401,448"/>
+<area shape="rect" id="node6" href="$a00257.html#a1319c3b11d29aae2bb70fd8aeddfee93" title="CO_Place\\lookup_address" alt="" coords="459,187,639,212"/>
+<area shape="rect" id="node9" href="$a00257.html#a0828fcac351a2f23404059be980e7b41" title="CO_Place\\__construct" alt="" coords="687,269,842,295"/>
+</map>

@@ -1,0 +1,9 @@
+<map id="A_CO_DB\get_single_record_by_id" name="A_CO_DB\get_single_record_by_id">
+<area shape="rect" id="node2" href="$a00301.html#aaca8bf49257aa5ade3c354ef76119fa4" title="A_CO_DB\\get_multiple\l_records_by_id" alt="" coords="201,99,361,137"/>
+<area shape="rect" id="node3" href="$a00301.html#ad2356dbed1b38898d8c17bcd8eb405ef" title="A_CO_DB\\_create_security\l_predicate" alt="" coords="409,36,594,75"/>
+<area shape="rect" id="node6" href="$a00301.html#a523e2f40174a0bca0fc873d6286b3ae9" title="A_CO_DB\\_instantiate\l_record" alt="" coords="423,99,579,137"/>
+<area shape="rect" id="node7" href="$a00301.html#a2396849660aa4ff018ab7509a4badeb5" title="A_CO_DB\\execute_query" alt="" coords="414,161,589,187"/>
+<area shape="rect" id="node4" href="$a00301.html#a176b2c663fa7768e95e4fbe93281adc6" title="A_CO_DB\\_create_read\l_security_predicate" alt="" coords="650,5,816,44"/>
+<area shape="rect" id="node5" href="$a00301.html#ad4bc3d416f085818935b32a814313202" title="A_CO_DB\\_create_write\l_security_predicate" alt="" coords="649,68,816,107"/>
+<area shape="rect" id="node8" href="$a00301.html#ae41efbdfe739934823b5f4c785b22611" title="A_CO_DB\\_execute_query" alt="" coords="642,161,824,187"/>
+</map>

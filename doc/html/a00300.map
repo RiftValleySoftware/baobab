@@ -1,0 +1,4 @@
+<map id="A_CO_DB" name="A_CO_DB">
+<area shape="rect" id="node2" href="$a00309.html" title="{CO_Main_Data_DB\n||+ __construct()\l+ item_exists()\l+ see_if_user_exists()\l+ tag0_is_unique()\l+ generic_search()\l+ get_accurate_distance()\l# _location_predicate()\l# _parse_tags()\l# _parse_integer_parameter()\l# _parse_string_parameter()\l# _parse_parameters()\l# _build_sql_query()\l}" alt="" coords="5,507,204,727"/>
+<area shape="rect" id="node3" href="$a00321.html" title="{CO_Security_DB\n||+ __construct()\l+ get_security_ids_for_id()\l+ i_have_all_ids()\l+ get_all_tokens()\l+ get_initial_record\l_by_login_id()\l+ get_credentials_by\l_api_key()\l+ get_initial_record\l_by_id()\l+ get_single_record_by\l_login_id()\l+ get_multiple_records\l_by_login_id()\l+ get_all_login_objects()\l+ get_all_login_objects\l_with_access()\l}" alt="" coords="227,473,406,760"/>
+</map>
