@@ -32,24 +32,26 @@ class CO_Config {
                                                     
     static $lang = 'en';                            ///< The default language for the server.
     static $min_pw_len = 8;                         ///< The minimum password length.
-    static $session_timeout_in_seconds = 3600;      ///< One-hour API key timeout.
-    static $god_session_timeout_in_seconds  = 3600; ///< API key session timeout for the "God Mode" login, in seconds (integer value). Default is 10 minutes.
-    static $api_key_includes_ip_address = true;     ///< If true (default is false), then the API key will include the user's IP address in the generation.
-    static $block_logins_for_valid_api_key = true;  ///< If this is true, then users cannot log in if there is an active API key in place for that user (forces the user to log out, first).
-    static $ssl_requirement_level  = CO_CONFIG_HTTPS_OFF;   /** This is the level of SSL/TLS required for transactions with the server. The possible values are:
+    static $session_timeout_in_seconds = 3600;      ///< One-hour API key timeout (Default).
+    static $god_session_timeout_in_seconds  = 600;  ///< API key session timeout for the "God Mode" login, in seconds (integer value). Default is 10 minutes.
+    static $api_key_includes_ip_address = false;    ///< If true (default is false), then the API key will include the user's IP address in the generation. If true, then a user can only connect from the same IP they initially logged in from.
+    static $block_logins_for_valid_api_key = true;  ///< If this is true, then users cannot log in if there is an active API key in place for that user (forces the user to log out, first). Default is true.
+    static $ssl_requirement_level  = CO_CONFIG_HTTPS_ALL;   /** This is the level of SSL/TLS required for transactions with the server. The possible values are:
                                                                 - CO_CONFIG_HTTPS_OFF (0)               ///< This means that SSL is not required for ANY transacation. It is recommended this level be selected for testing only.
                                                                 - CO_CONFIG_HTTPS_LOGIN_ONLY (1)        ///< SSL is only required for the initial 'login' call.
                                                                 - CO_CONFIG_HTTPS_LOGGED_IN_ONLY (2)    ///< SSL is required for the login call, as well as all calls that include an authentication header.
                                                                 - CO_CONFIG_HTTPS_ALL (3)               ///< SSL is required for all calls (Default).
                                                             */
     
-    /// These are the login and connection credentials for the databases. They are passed to PDO.
+    /// These are the login and connection credentials for the databases. They are passed to PDO. These databases are completely separate.
+    /// This is the main data database.
     static $data_db_name = '<YOUR DB NAME HERE>';
     static $data_db_host = 'localhost';
-    static $data_db_type = 'pgsql'; ///< This is the technology (PDO Driver) type for the main database. It should either be "mysql" or "pgsql"
+    static $data_db_type = 'pgsql'; ///< This is the technology (PDO Driver) type for the main database. It should either be "mysql" or "pgsql". We have one of each as the default, as examples.
     static $data_db_login = '<YOUR LOGIN HERE>';
     static $data_db_password = '<YOUR PASSWORD HERE>';
 
+    /// This is the security database.
     static $sec_db_name = '<YOUR DB NAME HERE>';
     static $sec_db_host = 'localhost';
     static $sec_db_type = 'mysql';
@@ -69,12 +71,12 @@ class CO_Config {
     
     If enabled, REST users will be able to send in a 'search_address_lookup=' (instead of 'search_longitude=' and 'search_latitude=') query parameter, as well as a 'search_radius=' parameter.
     */
-    static $allow_address_lookup = true;    
+    static $allow_address_lookup = false;    
     static $allow_general_address_lookup = false;   ///< If true (default is false), then just anyone (login not required) can do an address lookup. If false, then only logged-in users can do an address lookup. Ignored if $allow_address_lookup is false.
     static $default_region_bias = '';               ///< A default server Region bias.
     
-    /// Logging and Validation Callback Functions
-    static private $_login_validation_callback = 'baobab_test_harness_login_validation_function';
+    /// Logging and Validation Callback Functions. NULL means that no functions are called.
+    static private $_login_validation_callback = NULL;
                                                     /**<    This is a special callback for validating REST logins (BASALT). For most functions in the global scope, this will simply be the function name,
                                                             or as an array (with element 0 being the object, itself, and element 1 being the name of the function).
                                                             If this will be an object method, then it should be an array, with element 0 as the object, and element 1 a string, containing the function name.
@@ -144,49 +146,49 @@ class CO_Config {
 /// These are example handler functions.
 
 /// This function allows you to add the string 'TEST-SCRAG-BASALT-LOGIN' to the query to have it go bye-bye.
-function global_scope_basalt_login_validation_function($in_login_id, $in_password, $in_server_vars) {
-    if (preg_match('|TEST\-SCRAG\-BASALT\-LOGIN|', $_SERVER['QUERY_STRING'])) {
-        return false;
-    }
-    
-    return true;
-}
+// function global_scope_basalt_login_validation_function($in_login_id, $in_password, $in_server_vars) {
+//     if (preg_match('|TEST\-SCRAG\-BASALT\-LOGIN|', $_SERVER['QUERY_STRING'])) {
+//         return false;
+//     }
+//     
+//     return true;
+// }
 
 /// This is a high-level logging function that tracks API calls.
-function global_scope_basalt_logging_function($in_andisol_instance, $in_server_vars) {
-    $log_display = $in_server_vars;
-    $id = (NULL !== $in_andisol_instance->get_login_item()) ? $in_andisol_instance->get_login_item()->id() : '';
-    $login_id = (NULL !== $in_andisol_instance->get_login_item()) ? $in_andisol_instance->get_login_item()->login_id : '';
-    $id_entry = '' != $id ? "$id:$login_id" : '-';
-    $date_entry = date('\[d\/M\/Y:H:m:s O\]');
-    $request_entry = $_SERVER['REQUEST_METHOD'].' '.$_SERVER['REQUEST_URI'];
-    $log_entry = $_SERVER['REMOTE_ADDR']. ' - '.$id_entry.' '.$date_entry.' "'.$request_entry.'"';
-    $log_file = fopen(dirname(dirname(__FILE__)).'/log/test.log', 'a');
-    fwrite($log_file, $log_entry."\n");
-    fclose($log_file);
-}
+// function global_scope_basalt_logging_function($in_andisol_instance, $in_server_vars) {
+//     $log_display = $in_server_vars;
+//     $id = (NULL !== $in_andisol_instance->get_login_item()) ? $in_andisol_instance->get_login_item()->id() : '';
+//     $login_id = (NULL !== $in_andisol_instance->get_login_item()) ? $in_andisol_instance->get_login_item()->login_id : '';
+//     $id_entry = '' != $id ? "$id:$login_id" : '-';
+//     $date_entry = date('\[d\/M\/Y:H:m:s O\]');
+//     $request_entry = $_SERVER['REQUEST_METHOD'].' '.$_SERVER['REQUEST_URI'];
+//     $log_entry = $_SERVER['REMOTE_ADDR']. ' - '.$id_entry.' '.$date_entry.' "'.$request_entry.'"';
+//     $log_file = fopen(dirname(dirname(__FILE__)).'/log/test.log', 'a');
+//     fwrite($log_file, $log_entry."\n");
+//     fclose($log_file);
+// }
 
 /// This is a low-level logging function that tracks actual database access. It can severely impact performance, and generate huge files.
-function global_scope_badger_low_level_logging_function($id, $in_sql, $in_params) {
-    $id_entry = '' != $id ? "$id" : '-';
-    $date_entry = date('\[d\/M\/Y:H:m:s O\]');
-    $request_entry = $_SERVER['REQUEST_METHOD'].' '.$_SERVER['REQUEST_URI'];
-    $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-    $bt_array = [];
-    $bt_trace = '';
-    $indent = '';
-    foreach ($backtrace as $frame) {
-        $bt_array[] = $frame['function'].' ('.$frame['file'].':'.$frame['line'].')';
-        $bt_trace .= $indent.$bt_array[count($bt_array) - 1]."\n";
-        $indent .= "\t";
-    }
-    
-    if (!isset($in_params) || !$in_params || !is_array($in_params)) {
-        $in_params = [];
-    }
-    
-    $log_entry = $id_entry.' "SQL:'.$in_sql.'" "PARAMS:\''.implode('\',\'', $in_params).'\'" "BACKTRACE:'."\n$bt_trace".'"'."\n";
-    $log_file = fopen(dirname(dirname(__FILE__)).'/log/test.log', 'a');
-    fwrite($log_file, $log_entry."\n");
-    fclose($log_file);
-}
+// function global_scope_badger_low_level_logging_function($id, $in_sql, $in_params) {
+//     $id_entry = '' != $id ? "$id" : '-';
+//     $date_entry = date('\[d\/M\/Y:H:m:s O\]');
+//     $request_entry = $_SERVER['REQUEST_METHOD'].' '.$_SERVER['REQUEST_URI'];
+//     $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+//     $bt_array = [];
+//     $bt_trace = '';
+//     $indent = '';
+//     foreach ($backtrace as $frame) {
+//         $bt_array[] = $frame['function'].' ('.$frame['file'].':'.$frame['line'].')';
+//         $bt_trace .= $indent.$bt_array[count($bt_array) - 1]."\n";
+//         $indent .= "\t";
+//     }
+//     
+//     if (!isset($in_params) || !$in_params || !is_array($in_params)) {
+//         $in_params = [];
+//     }
+//     
+//     $log_entry = $id_entry.' "SQL:'.$in_sql.'" "PARAMS:\''.implode('\',\'', $in_params).'\'" "BACKTRACE:'."\n$bt_trace".'"'."\n";
+//     $log_file = fopen(dirname(dirname(__FILE__)).'/log/test.log', 'a');
+//     fwrite($log_file, $log_entry."\n");
+//     fclose($log_file);
+// }
