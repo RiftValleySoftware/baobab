@@ -23,8 +23,57 @@ require_once(dirname(dirname(__FILE__)).'/basalt/config/t_basalt_config.interfac
 /// This is a static class that contains the various configuration options for the BAOBAB Server.
 class CO_Config {
     use tCO_Basalt_Config; // These are the built-in config methods.
+    /// God Mode ID and Password. These can be changed at any time.
     static private $_god_mode_id = 2;               ///< God Login Security DB ID. This is private, so it can't be programmatically changed.
-    static private $_god_mode_password = 'BWU-HA-HAAAA-HA!'; ///< Plaintext password for the God Mode ID login. This overrides anything in the ID row.
+    static private $_god_mode_password = '<CHANGE TO STRONG PASSWORD>'; ///< Plaintext password for the God Mode ID login. This overrides anything in the ID row.
+
+    /// Server Secret Key -This is any string of characters you like. It can be changed at any time.
+    static private $_server_secret = '<CHANGE TO SERVER SECRET KEY>';  ///< This is a random string of characters that must be presented in the authentication header, along with the temporary API key.
+                                                    
+    static $lang = 'en';                            ///< The default language for the server.
+    static $min_pw_len = 8;                         ///< The minimum password length.
+    static $session_timeout_in_seconds = 3600;      ///< One-hour API key timeout.
+    static $god_session_timeout_in_seconds  = 3600; ///< API key session timeout for the "God Mode" login, in seconds (integer value). Default is 10 minutes.
+    static $api_key_includes_ip_address = true;     ///< If true (default is false), then the API key will include the user's IP address in the generation.
+    static $block_logins_for_valid_api_key = true;  ///< If this is true, then users cannot log in if there is an active API key in place for that user (forces the user to log out, first).
+    static $ssl_requirement_level  = CO_CONFIG_HTTPS_OFF;   /** This is the level of SSL/TLS required for transactions with the server. The possible values are:
+                                                                - CO_CONFIG_HTTPS_OFF (0)               ///< This means that SSL is not required for ANY transacation. It is recommended this level be selected for testing only.
+                                                                - CO_CONFIG_HTTPS_LOGIN_ONLY (1)        ///< SSL is only required for the initial 'login' call.
+                                                                - CO_CONFIG_HTTPS_LOGGED_IN_ONLY (2)    ///< SSL is required for the login call, as well as all calls that include an authentication header.
+                                                                - CO_CONFIG_HTTPS_ALL (3)               ///< SSL is required for all calls (Default).
+                                                            */
+    
+    /// These are the login and connection credentials for the databases. They are passed to PDO.
+    static $data_db_name = '<YOUR DB NAME HERE>';
+    static $data_db_host = 'localhost';
+    static $data_db_type = 'pgsql'; ///< This is the technology (PDO Driver) type for the main database. It should either be "mysql" or "pgsql"
+    static $data_db_login = '<YOUR LOGIN HERE>';
+    static $data_db_password = '<YOUR PASSWORD HERE>';
+
+    static $sec_db_name = '<YOUR DB NAME HERE>';
+    static $sec_db_host = 'localhost';
+    static $sec_db_type = 'mysql';
+    static $sec_db_login = '<YOUR LOGIN HERE>';
+    static $sec_db_password = '<YOUR PASSWORD HERE>';
+
+    /**
+    This is the Google API key. It's required for CHAMELEON to do address lookups and other geocoding tasks.
+    CHAMELEON requires this to have at least the Google Geocoding API enabled.
+    */
+    static $google_api_key = '<YOUR KEY HERE>';
+    
+    /**
+    This flag, if set to true (default is false), will allow REST users to send in an address as part of a location search.
+    This is ignored, if there is no $google_api_key. It should be noted that each address lookup does count against the API key quota, so that should be considered
+    before enabling this functionality.
+    
+    If enabled, REST users will be able to send in a 'search_address_lookup=' (instead of 'search_longitude=' and 'search_latitude=') query parameter, as well as a 'search_radius=' parameter.
+    */
+    static $allow_address_lookup = true;    
+    static $allow_general_address_lookup = false;   ///< If true (default is false), then just anyone (login not required) can do an address lookup. If false, then only logged-in users can do an address lookup. Ignored if $allow_address_lookup is false.
+    static $default_region_bias = '';               ///< A default server Region bias.
+    
+    /// Logging and Validation Callback Functions
     static private $_login_validation_callback = 'baobab_test_harness_login_validation_function';
                                                     /**<    This is a special callback for validating REST logins (BASALT). For most functions in the global scope, this will simply be the function name,
                                                             or as an array (with element 0 being the object, itself, and element 1 being the name of the function).
@@ -73,55 +122,11 @@ class CO_Config {
                                                             It should be noted that there may be security, legal, ethical and resource ramifications for logging.
                                                             It is up to the implementor to ensure compliance with all constraints.
                                                     */
-                                                    
-    static private $_server_secret = 'Supercalifragilisticexpialidocious';  ///< This is a random string of characters that must be presented in the authentication header, along with the temporary API key.
     
-    static $lang = 'en';                            ///< The default language for the server.
-    static $min_pw_len = 8;                         ///< The minimum password length.
-    static $session_timeout_in_seconds = 3600;      ///< One-hour API key timeout.
-    static $god_session_timeout_in_seconds  = 3600; ///< API key session timeout for the "God Mode" login, in seconds (integer value). Default is 10 minutes.
-    static $api_key_includes_ip_address = true;     ///< If true (default is false), then the API key will include the user's IP address in the generation.
-    static $block_logins_for_valid_api_key = true;  ///< If this is true, then users cannot log in if there is an active API key in place for that user (forces the user to log out, first).
-    static $ssl_requirement_level  = CO_CONFIG_HTTPS_OFF;   /** This is the level of SSL/TLS required for transactions with the server. The possible values are:
-                                                                - CO_CONFIG_HTTPS_OFF (0)               ///< This means that SSL is not required for ANY transacation. It is recommended this level be selected for testing only.
-                                                                - CO_CONFIG_HTTPS_LOGIN_ONLY (1)        ///< SSL is only required for the initial 'login' call.
-                                                                - CO_CONFIG_HTTPS_LOGGED_IN_ONLY (2)    ///< SSL is required for the login call, as well as all calls that include an authentication header.
-                                                                - CO_CONFIG_HTTPS_ALL (3)               ///< SSL is required for all calls (Default).
-                                                            */
-    
-    /// These are the login and connection credentials for the databases. They are passed to PDO.
-    static $data_db_name = '<YOUR DB NAME HERE>';
-    static $data_db_host = 'localhost';
-    static $data_db_type = 'pgsql'; ///< This is the technology (PDO Driver) type for the main database. It should either be "mysql" or "pgsql"
-    static $data_db_login = '<YOUR LOGIN HERE>';
-    static $data_db_password = '<YOUR PASSWORD HERE>';
-
-    static $sec_db_name = '<YOUR DB NAME HERE>';
-    static $sec_db_host = 'localhost';
-    static $sec_db_type = 'mysql';
-    static $sec_db_login = '<YOUR LOGIN HERE>';
-    static $sec_db_password = '<YOUR PASSWORD HERE>';
-
-    /**
-    This is the Google API key. It's required for CHAMELEON to do address lookups and other geocoding tasks.
-    CHAMELEON requires this to have at least the Google Geocoding API enabled.
-    */
-    static $google_api_key = '<YOUR KEY HERE>';
-    
-    /**
-    This flag, if set to true (default is false), will allow REST users to send in an address as part of a location search.
-    This is ignored, if there is no $google_api_key. It should be noted that each address lookup does count against the API key quota, so that should be considered
-    before enabling this functionality.
-    
-    If enabled, REST users will be able to send in a 'search_address_lookup=' (instead of 'search_longitude=' and 'search_latitude=') query parameter, as well as a 'search_radius=' parameter.
-    */
-    static $allow_address_lookup = true;    
-    static $allow_general_address_lookup = false;   ///< If true (default is false), then just anyone (login not required) can do an address lookup. If false, then only logged-in users can do an address lookup. Ignored if $allow_address_lookup is false.
-    static $default_region_bias = '';               ///< A default server Region bias.
-    
+    /// These probably don't need to be changed.
     /***********************/
     /**
-    \returns the POSIX path to the main BASALT directory.
+    \returns the POSIX path to the main BASALT directory. It assumes that this file is in a directory at the same laevel as the basalt directory.
      */
     static function base_dir() {
         return dirname(dirname(__FILE__)).'/basalt';
@@ -129,11 +134,11 @@ class CO_Config {
     
     /***********************/
     /**
-    \returns the POSIX path to the RVP Additional Plugins directory.
+    \returns the POSIX path to any RVP Additional Plugins directory. This assumes the directory is outside the main installation path. In the default install, this is ignored.
      */
-    static function extension_dir() {
-        return dirname(dirname(dirname(dirname(__FILE__)))).'/rvp_plugins';
-    }
+//     static function extension_dir() {
+//         return dirname(dirname(dirname(dirname(__FILE__)))).'/rvp_plugins';
+//     }
 }
 
 /// These are example handler functions.
