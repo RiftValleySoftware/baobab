@@ -644,8 +644,7 @@ class CO_people_Basalt_Plugin extends A_CO_Basalt_Plugin {
             if (($result && $password) && ($in_andisol_instance->manager() || ($login_instance == $in_andisol_instance->get_login_item()))) {
                 $result = $login_instance->set_password_from_cleartext($password);
                 if ($result) {
-// 9/30/2020 -CDM. Commenting out, because this can cause occasional server connection issues with the Recovrr client.
-//                     $result = $login_instance->clear_api_key(); // Doing this invalidates any current logins.
+                    $result = $login_instance->clear_api_key(); // Doing this invalidates any current logins.
                     if ($result) {
                         $changed_password = $password;
                         $login_changed = true;
