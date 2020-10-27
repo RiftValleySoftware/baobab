@@ -553,6 +553,18 @@ class CO_people_Basalt_Plugin extends A_CO_Basalt_Plugin {
         $read_token = NULL;
         $write_token = NULL;
         $tokens = NULL;
+        $convert_to_manager = NULL;
+        $convert_to_login = NULL;
+        
+        // If the instances are currently logins, they will be converted to managers.
+        if (isset($params['convert_to_manager']) && trim($params['convert_to_manager'])) {
+            $convert_to_manager = true;
+        }
+        
+        // If the instances are currently managers, they will be converted to logins.
+        if (!$convert_to_manager && isset($params['convert_to_login']) && trim($params['convert_to_login'])) {
+            $convert_to_login = true;
+        }
         
         if (isset($params['lang']) && trim($params['lang'])) {
             $lang = trim($params['lang']);
@@ -661,6 +673,20 @@ class CO_people_Basalt_Plugin extends A_CO_Basalt_Plugin {
             
             if ($result && $write_token) {
                 $result = $login_instance->set_write_security_id($write_token);
+                if ($result) {
+                    $login_changed = true;
+                }
+            }
+            
+            if ($result && $convert_to_manager && !$login_instance->is_manager() && $in_andisol_instance->get_cobra_instance()) {
+                $result = $in_andisol_instance->get_cobra_instance()->convert_login($login_instance->login_id, true);
+                if ($result) {
+                    $login_changed = true;
+                }
+            }
+            
+            if ($result && $convert_to_login && $login_instance->is_manager() && $in_andisol_instance->get_cobra_instance()) {
+                $result = $in_andisol_instance->get_cobra_instance()->convert_login($login_instance->login_id, false);
                 if ($result) {
                     $login_changed = true;
                 }
