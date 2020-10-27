@@ -25,7 +25,7 @@
 */
 defined( 'LGV_ACCESS_CATCHER' ) or die ( 'Cannot Execute Directly' );	// Makes sure that this file is in the correct context.
 
-define('__COBRA_VERSION__', '1.0.0.3002');
+define('__COBRA_VERSION__', '1.0.2.3000');
 
 require_once(CO_Config::chameleon_main_class_dir().'/co_chameleon.class.php');
 
@@ -89,6 +89,53 @@ class CO_Cobra {
 	                            ) {
 	    $this->_chameleon_instance = $in_chameleon_instance;
 	    $this->version = __COBRA_VERSION__;
+    }
+    
+    /***********************/
+    /**
+    This is the internal function used to convert a login to (or from) a manager, in the security database.
+    This can only be called from a login manager.
+    
+    \returns the converted instance.
+     */
+    protected function _convert_login(  $in_login_id,                   ///< The login ID as text. This must be for a login that can be managed by the current manager.
+                                        $in_is_login_manager = false    ///< If true, then this is a "promotion" to a a manager. If false (default), then this is a "demotion" to a standard user.
+                                        ) {
+        $ret = NULL;
+        $working_login = $this->_chameleon_instance->get_login_item_by_login_string($in_login_id);   // This is the login we are changing.
+        $manager = $this->_chameleon_instance->get_login_item();                                    // This is our current login.
+        // Make sure we are a login manager, first, and that we have write permission on the user.
+        if ($working_login && $working_login->user_can_write() && ($manager instanceof CO_Login_Manager || $manager->is_god())) {
+            // Now, make sure that we're actually making a change.
+            if (($in_is_login_manager && !$working_login->is_manager()) || (!$in_is_login_manager && $working_login->is_manager())) {
+                $className = $in_is_login_manager ? 'CO_Login_Manager' : 'CO_Cobra_Login';
+                
+                // Create a new blank instance.
+                $new_login_object = $this->_chameleon_instance->make_new_blank_record($className);
+                
+                if (isset($new_login_object) && ($new_login_object instanceof CO_Cobra_Login)) {
+                    $new_login_object->login_id = $working_login->login_id;
+                    $new_login_object->read_security_id = $working_login->read_security_id;
+                    $new_login_object->write_security_id = $working_login->write_security_id;
+                    $new_login_object->name = $working_login->name;
+                    $new_login_object->context = $working_login->context;
+                    $new_login_object->set_ids($working_login->ids);
+                    // OK. At this point, we have a new login that is of the type that we want. It is different from the previous one, and has all the relevant data.
+                    // Now, we will delete the old one (has to be done first, as the login ID is unique), and then replace it with the new one.
+                    if ($working_login->delete_from_db()) { // This is done at a very low level, in order to avoid converting to a security node.
+                        if ($new_login_object->update_db()) {
+                            $ret = $new_login_object;   // If everything went well, to this point, we update the return.
+                        } else {
+                            $this->error = $new_login_object->error;
+                        }
+                    } else {
+                        $this->error = $working_login->error;
+                    }
+                }                
+            }
+        }
+        
+        return $ret;
     }
     
     /***********************/
@@ -363,6 +410,20 @@ class CO_Cobra {
                                                 $in_security_token_ids = NULL   ///< An array of integers. These are security token IDs for the login (default is NULL). If NULL, then no IDs will be set. These IDs must be selected from those available to the currently logged-in manager.
                                             ) {
         return $this->_create_new_login($in_login_id, $in_cleartext_password, $in_security_token_ids, true);
+    }
+    
+    /***********************/
+    /**
+    This is the public function used to convert a login to (or from) a manager, in the security database.
+    This can only be called from a login manager.
+    The user is not affected, and the login IDs (tokens) are also left "as is."
+    
+    \returns the converted instance.
+     */
+    public function convert_login(  $in_login_id,                   ///< The login ID as text. This must be for a login that can be managed by the current manager.
+                                    $in_is_login_manager = false    ///< If true, then this is a "promotion" to a a manager. If false (default), then this is a "demotion" to a standard user.
+                                ) {
+        return $this->_convert_login($in_login_id, $in_is_login_manager);
     }
     
     /***********************/
