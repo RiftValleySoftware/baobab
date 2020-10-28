@@ -109,22 +109,49 @@ class CO_Cobra {
             // Now, make sure that we're actually making a change.
             if (($in_is_login_manager && !$working_login->is_manager()) || (!$in_is_login_manager && $working_login->is_manager())) {
                 $className = $in_is_login_manager ? 'CO_Login_Manager' : 'CO_Cobra_Login';
+                $user_object = $this->get_user_from_login($working_login->id());    // Get this, so we can modify it.
                 
                 // Create a new blank instance.
                 $new_login_object = $this->_chameleon_instance->make_new_blank_record($className);
                 
                 if (isset($new_login_object) && ($new_login_object instanceof CO_Cobra_Login)) {
+                    $original_login_id = $working_login->id();
+                    $original_ids = $working_login->ids();
+                    if (!isset($original_ids)) {
+                        $original_ids = [];
+                    }
+                    
+                    array_push($original_ids, $original_login_id);    // We will add this to the new login's IDs.
+                    $original_ids = array_unique($original_ids);
+                    
+                    asort($original_ids);
+                    
                     $new_login_object->login_id = $working_login->login_id;
-                    $new_login_object->read_security_id = $working_login->read_security_id;
-                    $new_login_object->write_security_id = $working_login->write_security_id;
                     $new_login_object->name = $working_login->name;
                     $new_login_object->context = $working_login->context;
-                    $new_login_object->set_ids($working_login->ids);
+                    $new_login_object->set_ids($original_ids);
                     // OK. At this point, we have a new login that is of the type that we want. It is different from the previous one, and has all the relevant data.
-                    // Now, we will delete the old one (has to be done first, as the login ID is unique), and then replace it with the new one.
-                    if ($working_login->delete_from_db()) { // This is done at a very low level, in order to avoid converting to a security node.
+                    // Now, we will delete the old one, and then replace it with the new one.
+                    if ($working_login->delete_from_db()) {
                         if ($new_login_object->update_db()) {
-                            $ret = $new_login_object;   // If everything went well, to this point, we update the return.
+                            $new_id = $new_login_object->id();
+                            if ($this->_chameleon_instance->get_login_item()->add_new_login_id($new_id)) {
+                                $new_login_object->read_security_id = $new_id;
+                                $new_login_object->write_security_id = $new_id;
+                                if ($new_login_object->update_db()) {
+                                    $user_object->write_security_id = $new_id;
+                                    $user_object->set_login($new_id);
+                                    if ($user_object->update_db()) {
+                                        $ret = $new_login_object;   // If everything went well, to this point, we update the return.
+                                    } else {
+                                        $this->error = $user_object->error;
+                                    }
+                                } else {
+                                    $this->error = $new_login_object->error;
+                                }
+                            } else {
+                                $this->error = $this->_chameleon_instance->error;
+                            }
                         } else {
                             $this->error = $new_login_object->error;
                         }

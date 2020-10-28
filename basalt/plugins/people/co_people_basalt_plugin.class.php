@@ -557,12 +557,12 @@ class CO_people_Basalt_Plugin extends A_CO_Basalt_Plugin {
         $convert_to_login = NULL;
         
         // If the instances are currently logins, they will be converted to managers.
-        if (isset($params['convert_to_manager']) && trim($params['convert_to_manager'])) {
+        if (isset($in_query['convert_to_manager'])) {
             $convert_to_manager = true;
         }
         
         // If the instances are currently managers, they will be converted to logins.
-        if (!$convert_to_manager && isset($params['convert_to_login']) && trim($params['convert_to_login'])) {
+        if (!$convert_to_manager && isset($in_query['convert_to_login'])) {
             $convert_to_login = true;
         }
         
