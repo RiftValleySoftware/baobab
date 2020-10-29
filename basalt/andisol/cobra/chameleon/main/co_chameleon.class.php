@@ -25,7 +25,7 @@
 */
 defined( 'LGV_ACCESS_CATCHER' ) or die ( 'Cannot Execute Directly' );	// Makes sure that this file is in the correct context.
 
-define('__CHAMELEON_VERSION__', '1.0.0.3001');
+define('__CHAMELEON_VERSION__', '1.0.3.3000');
 
 require_once(CO_Config::badger_main_class_dir().'/co_access.class.php');
 
@@ -126,6 +126,21 @@ class CO_Chameleon extends CO_Access {
         }
         
         return $ret;
+    }
+    
+    /***********************/
+    /**
+    You give a security ID, and you will get a count of all login objects that have that token in their list (or are of that ID).
+    
+    This is not restricted, and will count logins that we don't otherwise know about.
+    
+    It does not count the "God" admin, which always has access.
+       
+    \returns an integer, with the total count of logins with access to the ID. -1, if we are not allowed to see the token.
+     */
+    public function count_all_login_objects_with_access($in_security_token  ///< An integer, with the requested security token.
+                                                        ) {
+        return $this->_security_db_object->count_all_login_objects_with_access($in_security_token);
     }
     
     /***********************/

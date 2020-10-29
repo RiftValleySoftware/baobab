@@ -3,6 +3,7 @@
             <xs:choice maxOccurs="unbounded">
                 <xs:element minOccurs="0" ref='b:plugins'/>
                 <xs:element minOccurs="0" ref='b:tokens'/>
+                <xs:element minOccurs="0" ref='b:count_access_to'/>
                 <xs:element minOccurs="0" ref='b:people'/>
                 <xs:element minOccurs="0" ref='b:places'/>
                 <xs:element minOccurs="0" ref='b:things'/>
@@ -28,6 +29,15 @@
         <xs:complexType>
             <xs:sequence>
                 <xs:element maxOccurs='unbounded' ref='b:value'/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name='count_access_to'>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs='0' name='token' type='xs:integer'/>
+                <xs:element minOccurs='0' name='access' type='xs:integer'/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>

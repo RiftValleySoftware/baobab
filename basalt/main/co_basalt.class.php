@@ -26,7 +26,7 @@
 */
 defined( 'LGV_BASALT_CATCHER' ) or die ( 'Cannot Execute Directly' );	// Makes sure that this file is in the correct context.
 
-define('__BASALT_VERSION__', '1.0.2.3000');
+define('__BASALT_VERSION__', '1.0.3.3000');
 
 if (!defined('LGV_ACCESS_CATCHER')) {
     define('LGV_ACCESS_CATCHER', 1);
@@ -400,8 +400,12 @@ class CO_Basalt extends A_CO_Basalt_Plugin {
                                                 ) {
         $ret = NULL;
         if ($in_andisol_instance->logged_in()) {    // We also have to be logged in to have any access to tokens.
-            if (('GET' == $in_http_method) && (!isset($in_path) || !is_array($in_path) || !count($in_path))) {   // Do we just want a list of our tokens?
-                $ret = ['tokens' => $in_andisol_instance->get_chameleon_instance()->get_available_tokens()];
+            if (('GET' == $in_http_method) && (!isset($in_path) || !is_array($in_path) || !count($in_path))) {   // Do we just want a list of our tokens, or count access to a token?
+                if (isset($in_query['count_access_to']) && (0 < intval($in_query['count_access_to']))) {    // Ask for a response that counts all logins that have access to a given token.
+                    $ret = ['count_access_to' => ['token' => intval($in_query['count_access_to']), 'access' => $in_andisol_instance->get_chameleon_instance()->count_all_login_objects_with_access(intval($in_query['count_access_to']))]];
+                } else {
+                    $ret = ['tokens' => $in_andisol_instance->get_chameleon_instance()->get_available_tokens()];
+                }
             } elseif (('POST' == $in_http_method) && $in_andisol_instance->manager()) {  // If we are handling POST, then we ignore everything else, and create a new token. However, we need to be a manager to do this.
                 $ret = ['tokens' => [$in_andisol_instance->make_security_token()]];
             } else {
