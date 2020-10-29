@@ -401,11 +401,19 @@ class CO_Basalt extends A_CO_Basalt_Plugin {
         $ret = NULL;
         if ($in_andisol_instance->logged_in()) {    // We also have to be logged in to have any access to tokens.
             if (('GET' == $in_http_method) && (!isset($in_path) || !is_array($in_path) || !count($in_path))) {   // Do we just want a list of our tokens, or count access to a token?
-                if (isset($in_query['count_access_to']) && (0 < intval($in_query['count_access_to']))) {    // Ask for a response that counts all logins that have access to a given token.
-                    $ret = ['count_access_to' => ['token' => intval($in_query['count_access_to']), 'access' => $in_andisol_instance->get_chameleon_instance()->count_all_login_objects_with_access(intval($in_query['count_access_to']))]];
-                } else {
-                    $ret = ['tokens' => $in_andisol_instance->get_chameleon_instance()->get_available_tokens()];
+                $ret = ['tokens' => $in_andisol_instance->get_chameleon_instance()->get_available_tokens()];
+            } elseif (('GET' == $in_http_method) && isset($in_query['count_access_to']) && (isset($in_path) && is_array($in_path) && count($in_path))) {    // Ask for a response that counts all logins that have access to a given token.
+                $ids = array_map('trim', explode(',', $in_path[0]));
+                $ids = array_map('trim', $ids);
+                $ids = array_map('intval', $ids);
+                $ids = array_unique($ids);
+                $retTemp = [];
+                foreach ($ids as $single_id) {
+                    if (1 < $single_id) {    // We don't do 0 or 1
+                        array_push($retTemp, ['token' => intval($single_id), 'access' => $in_andisol_instance->get_chameleon_instance()->count_all_login_objects_with_access(intval($single_id))]);
+                    }
                 }
+                $ret = ['count_access_to' => $retTemp];
             } elseif (('POST' == $in_http_method) && $in_andisol_instance->manager()) {  // If we are handling POST, then we ignore everything else, and create a new token. However, we need to be a manager to do this.
                 $ret = ['tokens' => [$in_andisol_instance->make_security_token()]];
             } else {
