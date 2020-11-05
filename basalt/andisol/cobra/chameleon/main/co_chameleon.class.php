@@ -25,7 +25,7 @@
 */
 defined( 'LGV_ACCESS_CATCHER' ) or die ( 'Cannot Execute Directly' );	// Makes sure that this file is in the correct context.
 
-define('__CHAMELEON_VERSION__', '1.0.3.3000');
+define('__CHAMELEON_VERSION__', '1.0.4.3000');
 
 require_once(CO_Config::badger_main_class_dir().'/co_access.class.php');
 
@@ -145,6 +145,32 @@ class CO_Chameleon extends CO_Access {
     
     /***********************/
     /**
+    You give a security ID, and you will get an array, with the login objects that have that token in their list (or are of that ID).
+    
+    This is security restricted, and will not return logins that we don't otherwise know about.
+       
+    \returns an array, with the login objects that have that token in their list (or are of that ID).
+     */
+    public function get_all_login_objects_with_access($in_security_token  ///< An integer, with the requested security token.
+                                                        ) {
+        return $this->_security_db_object->get_all_login_objects_with_access($in_security_token);
+    }
+    
+    /***********************/
+    /**
+    You give a security ID, and you will get an array, with the user objects, associated with login objects that have that token in their list (or are of that ID).
+    
+    This is security restricted, and will not return users that we don't otherwise know about.
+       
+    \returns an array, with the user objects, associated with login objects that have that token in their list (or are of that ID).
+     */
+    public function get_all_user_objects_with_access($in_security_token  ///< An integer, with the requested security token.
+                                                        ) {
+        return $this->_security_db_object->get_all_user_objects_with_access($in_security_token);
+    }
+    
+    /***********************/
+    /**
     This returns the language string for the given user/login.
     
     If there is a user item associated with the login, then that gets first dibs. Login item gets dibs over default server.
@@ -166,7 +192,7 @@ class CO_Chameleon extends CO_Access {
         
         return $ret;
     }
-    
+        
     /***********************/
     /**
     This tests a login ID for the special "Heisenberg" one-time test.

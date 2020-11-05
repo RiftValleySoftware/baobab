@@ -25,7 +25,7 @@
 */
 defined( 'LGV_ANDISOL_CATCHER' ) or die ( 'Cannot Execute Directly' );	// Makes sure that this file is in the correct context.
 
-define('__ANDISOL_VERSION__', '1.0.3.3000');
+define('__ANDISOL_VERSION__', '1.0.4.3000');
 
 if (!defined('LGV_ACCESS_CATCHER')) {
     define('LGV_ACCESS_CATCHER', 1);
@@ -1626,5 +1626,18 @@ class CO_Andisol {
         }
         
         return $this->create_place($auto_resolve, $in_venue, $in_street_address, $in_municipality, $in_county, $in_province, $in_postal_code, NULL, NULL, $in_longitude_degrees, $in_latitude_degrees, $in_fuzz_factor, $in_see_clearly_id, $in_read_security_id, $in_write_security_id, $class);
+    }
+    
+    /***********************/
+    /**
+    You give a security ID, and you will get a count of all login objects that have that token in their list (or are of that ID).
+    
+    This is not restricted, and will count logins that we don't otherwise know about.
+       
+    \returns an integer, with the total count of logins with access to the ID. -1, if we are not allowed to see the token.
+     */
+    public function count_all_login_objects_with_access($in_security_token  ///< An integer, with the requested security token.
+                                                        ) {
+        return $this->get_chameleon_instance()->count_all_login_objects_with_access($in_security_token);
     }
 };

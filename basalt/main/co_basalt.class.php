@@ -26,7 +26,7 @@
 */
 defined( 'LGV_BASALT_CATCHER' ) or die ( 'Cannot Execute Directly' );	// Makes sure that this file is in the correct context.
 
-define('__BASALT_VERSION__', '1.0.3.3000');
+define('__BASALT_VERSION__', '1.0.4.3000');
 
 if (!defined('LGV_ACCESS_CATCHER')) {
     define('LGV_ACCESS_CATCHER', 1);
@@ -511,10 +511,18 @@ class CO_Basalt extends A_CO_Basalt_Plugin {
             if ('token' == trim($in_path[0])) {
                 $token = intval(trim($in_path[1]));
                 if ((0 <= $token) && $in_andisol_instance->get_chameleon_instance()->i_have_this_token($token)) {
-                    $ids = $in_andisol_instance->get_chameleon_instance()->get_all_login_objects_with_access($token);
-                    if (count($ids)) {
-                        $ret['token']['token'] = $token;
-                        $ret['token']['login_ids'] = array_map(function($item){ return intval($item->id()); }, $ids);
+                    if (isset($in_query['users'])) {
+                        $objects = $in_andisol_instance->get_all_user_objects_with_access($token);
+                        if (count($objects)) {
+                            $ret['token']['token'] = $token;
+                            $ret['token']['user_ids'] = array_map(function($item){ return intval($item->id()); }, $objects);
+                        }
+                    } else {
+                        $objects = $in_andisol_instance->get_all_login_objects_with_access($token);
+                        if (count($objects)) {
+                            $ret['token']['token'] = $token;
+                            $ret['token']['login_ids'] = array_map(function($item){ return intval($item->id()); }, $objects);
+                        }
                     }
                 } else {
                     header('HTTP/1.1 400 Invalid Token');
