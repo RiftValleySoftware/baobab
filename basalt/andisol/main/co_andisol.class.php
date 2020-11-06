@@ -25,7 +25,7 @@
 */
 defined( 'LGV_ANDISOL_CATCHER' ) or die ( 'Cannot Execute Directly' );	// Makes sure that this file is in the correct context.
 
-define('__ANDISOL_VERSION__', '1.0.4.3000');
+define('__ANDISOL_VERSION__', '1.0.5.3000');
 
 if (!defined('LGV_ACCESS_CATCHER')) {
     define('LGV_ACCESS_CATCHER', 1);
@@ -1639,5 +1639,131 @@ class CO_Andisol {
     public function count_all_login_objects_with_access($in_security_token  ///< An integer, with the requested security token.
                                                         ) {
         return $this->get_chameleon_instance()->count_all_login_objects_with_access($in_security_token);
+    }
+    
+    /***********************/
+    /**
+    This fetches the list of security tokens the currently logged-in user has available.
+    This will reload any non-God Mode IDs before fetching the IDs, in order to spike privilege escalation.
+    
+    With the God Mode, you get all the security tokens.
+    
+    \returns an array of integers, with each one representing a security token. The first element will always be the ID of the user.
+     */
+    public function get_available_tokens() {
+        return $this->get_chameleon_instance()->get_available_tokens();
+    }
+    
+    /***********************/
+    /**
+    You give a security ID, and you will get a count of all login objects that have that token in their list (or are of that ID).
+    
+    This is not restricted, and will count logins that we don't otherwise know about.
+    
+    It does not count the "God" admin, which always has access.
+       
+    \returns an integer, with the total count of logins with access to the ID. -1, if we are not allowed to see the token.
+     */
+    public function count_all_login_objects_with_access($in_security_token  ///< An integer, with the requested security token.
+                                                        ) {
+        return $this->get_chameleon_instance()->count_all_login_objects_with_access($in_security_token);
+    }
+    
+    /***********************/
+    /**
+    Tests a token, to see if the current user has it.
+    
+    \returns true, if the current user has the given token.
+     */
+    public function i_have_this_token(  $in_token_to_test   ///< The token we are checking out
+                                    ) {
+        return $this->get_chameleon_instance()->i_have_this_token($in_token_to_test);
+    }
+    
+    /***********************/
+    /**
+    This returns true, if the current user at least has read access to the Data DB record whose ID is provided..
+    
+    This is "security safe," so that means that if the user does not have rights to the row, or the row does not exist, they will get false.
+    
+    \returns a boolean, true, if the user has read access to an existing record in the Data database.
+     */
+    public function can_i_see_this_data_record( $in_id  ///< This is the ID of the record to check.
+                                                ) {
+        return $this->get_chameleon_instance()->can_i_see_this_data_record($in_id);
+    }
+    
+    /***********************/
+    /**
+    This returns true, if the current user at least has read access to the Security DB record whose ID is provided..
+    
+    This is "security safe," so that means that if the user does not have rights to the row, or the row does not exist, they will get false.
+    
+    \returns a boolean, true, if the user has read access to an existing record in the Security database.
+     */
+    public function can_i_see_this_security_record( $in_id  ///< This is the ID of the record to check.
+                                                ) {
+        return $this->get_chameleon_instance()->can_i_see_this_security_record($in_id);
+    }
+    
+    /***********************/
+    /**
+    You give a security ID, and you will get all login objects that have that token in their list (or are of that ID).
+    
+    This is restricted to use security vetting, so only logins visible to the current login.
+       
+    \returns an array of instances.
+     */
+    public function get_all_login_objects_with_access(  $in_security_token, ///< An integer, with the requested security token.
+                                                        $and_write = false  ///< If true, then we only want ones we have write access to.
+                                                ) {
+        return $this->get_chameleon_instance()->get_all_login_objects_with_access($in_security_token, $and_write);
+    }
+    
+    /***********************/
+    /**
+    You give a security ID, and you will get all user objects that have a login wih that token in their list (or are of that ID).
+    
+    This is restricted to use security vetting, so only users visible to the current login.
+       
+    \returns an array of instances.
+     */
+    public function get_all_user_objects_with_access(   $in_security_token  ///< An integer, with the requested security token.
+                                                    ) {
+        return $this->get_chameleon_instance()->get_all_user_objects_with_access($in_security_token);
+    }
+    
+    /***********************/
+    /**
+    This is a special "God Mode-Only" method that dumps everything in both databases. It is used to generate a CSV backup file.
+    
+    The user must be logged in as "God."
+    
+    \returns an associative array ('security' => array, 'data' => array') of two sets of associative arrays, with the dump. NULL if the user is not authorized.
+     */
+    public function fetch_backup() {
+        return $this->get_chameleon_instance()->fetch_backup();
+    }
+
+    /***********************/
+    /**
+    \returns true, if the given login exists, false, if not, but NULL, if there is no security DB (we're not logged in). NOTE: This is not subject to security vetting.
+     */
+    public function check_login_exists_by_login_string( $in_login_id_string    ///< The string login ID to check
+                                                        ) {
+        return $this->get_chameleon_instance()->check_login_exists_by_login_string($in_login_id_string);
+    }
+    
+    /***********************/
+    /**
+    This method instantiates a new, default instance of a class.
+    
+    The instance does not reflect a database entity until it has had its update_db() method called.
+    
+    \returns a new, uninitialized instance of the requested class.
+     */
+    public function make_new_blank_record(  $in_classname   ///< This is the name of the class to instantiate.
+                                        ) {
+        return $this->get_chameleon_instance()->make_new_blank_record($in_classname);
     }
 };

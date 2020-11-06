@@ -26,7 +26,7 @@
 */
 defined( 'LGV_BASALT_CATCHER' ) or die ( 'Cannot Execute Directly' );	// Makes sure that this file is in the correct context.
 
-define('__BASALT_VERSION__', '1.0.4.3000');
+define('__BASALT_VERSION__', '1.0.5.3000');
 
 if (!defined('LGV_ACCESS_CATCHER')) {
     define('LGV_ACCESS_CATCHER', 1);
@@ -401,7 +401,7 @@ class CO_Basalt extends A_CO_Basalt_Plugin {
         $ret = NULL;
         if ($in_andisol_instance->logged_in()) {    // We also have to be logged in to have any access to tokens.
             if (('GET' == $in_http_method) && (!isset($in_path) || !is_array($in_path) || !count($in_path))) {   // Do we just want a list of our tokens, or count access to a token?
-                $ret = ['tokens' => $in_andisol_instance->get_chameleon_instance()->get_available_tokens()];
+                $ret = ['tokens' => $in_andisol_instance->get_available_tokens()];
             } elseif (('GET' == $in_http_method) && isset($in_query['count_access_to']) && (isset($in_path) && is_array($in_path) && count($in_path))) {    // Ask for a response that counts all logins that have access to a given token.
                 $ids = array_map('trim', explode(',', $in_path[0]));
                 $ids = array_map('trim', $ids);
@@ -410,7 +410,7 @@ class CO_Basalt extends A_CO_Basalt_Plugin {
                 $retTemp = [];
                 foreach ($ids as $single_id) {
                     if (1 < $single_id) {    // We don't do 0 or 1
-                        array_push($retTemp, ['token' => intval($single_id), 'access' => $in_andisol_instance->get_chameleon_instance()->count_all_login_objects_with_access(intval($single_id))]);
+                        array_push($retTemp, ['token' => intval($single_id), 'access' => $in_andisol_instance->count_all_login_objects_with_access(intval($single_id))]);
                     }
                 }
                 $ret = ['count_access_to' => $retTemp];
@@ -510,7 +510,7 @@ class CO_Basalt extends A_CO_Basalt_Plugin {
         } elseif (('visibility' == $in_command) && $in_andisol_instance->logged_in()) {
             if ('token' == trim($in_path[0])) {
                 $token = intval(trim($in_path[1]));
-                if ((0 <= $token) && $in_andisol_instance->get_chameleon_instance()->i_have_this_token($token)) {
+                if ((0 <= $token) && $in_andisol_instance->i_have_this_token($token)) {
                     if (isset($in_query['users'])) {
                         $objects = $in_andisol_instance->get_all_user_objects_with_access($token);
                         if (count($objects)) {
@@ -531,12 +531,12 @@ class CO_Basalt extends A_CO_Basalt_Plugin {
             } else {
                 $id = intval(trim($in_path[0]));
                 // The ID must be generally valid, and we need to be able to see it.
-                if ((1 < $id) && $in_andisol_instance->get_chameleon_instance()->can_i_see_this_data_record($id)) {
+                if ((1 < $id) && $in_andisol_instance->can_i_see_this_data_record($id)) {
                     $record = $in_andisol_instance->get_single_data_record_by_id($id);
                 
                     if ($record) {
-                        $read_login_records = $in_andisol_instance->get_chameleon_instance()->get_all_login_objects_with_access($record->read_security_id);
-                        $write_login_records = $in_andisol_instance->get_chameleon_instance()->get_all_login_objects_with_access($record->write_security_id);
+                        $read_login_records = $in_andisol_instance->get_all_login_objects_with_access($record->read_security_id);
+                        $write_login_records = $in_andisol_instance->get_all_login_objects_with_access($record->write_security_id);
                         $ret['id']['id'] = $id;
                         $ret['id']['writeable'] = $record->user_can_write();
                         $read_login_records = array_map(function($item){ return intval($item->id()); }, $read_login_records);
@@ -641,7 +641,7 @@ class CO_Basalt extends A_CO_Basalt_Plugin {
         
         // Have to be "God," and the variable in the config needs to be set.
         if ($in_andisol_instance->god()) {
-            $backup = $in_andisol_instance->get_chameleon_instance()->fetch_backup();
+            $backup = $in_andisol_instance->fetch_backup();
             
             if (isset($backup) && is_array($backup) && (2 == count($backup)) && isset($backup['security']) && is_array($backup['security']) && count($backup['security']) && isset($backup['data']) && is_array($backup['data']) && count($backup['data'])) {
                 $header_row = ['id','api_key','login_id','access_class','last_access','read_security_id','write_security_id','object_name','access_class_context','owner','longitude','latitude','tag0','tag1','tag2','tag3','tag4','tag5','tag6','tag7','tag8','tag9','ids','payload'];
@@ -813,11 +813,11 @@ class CO_Basalt extends A_CO_Basalt_Plugin {
         $access_class = $in_row_data['access_class'];
         
         // Make sure that we don't step on any logins.
-        if ($this->_andisol_instance->get_chameleon_instance()->check_login_exists_by_login_string($in_row_data['login_id'])) {
+        if ($this->_andisol_instance->check_login_exists_by_login_string($in_row_data['login_id'])) {
             $in_row_data['login_id'] .= '-copy';
         }
         
-        $new_record = $this->_andisol_instance->get_chameleon_instance()->make_new_blank_record($access_class);
+        $new_record = $this->_andisol_instance->make_new_blank_record($access_class);
         
         if (isset($new_record) && ($new_record instanceof $access_class)) {
             $in_row_data['id'] = $new_record->id();
