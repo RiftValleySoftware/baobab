@@ -224,7 +224,7 @@ class CO_people_Basalt_Plugin extends A_CO_Basalt_Plugin {
             $login_id_list = $is_numeric ? array_map('intval', $login_id_list) : $login_id_list;
             // A manager can ask for a "test" of a single login, to see if it is in use (regardless of whether or not they have view rights).
             if (!$is_numeric && (1 == count($login_id_list)) && trim($login_id_list[0]) && isset($in_query) && is_array($in_query) && (3 == count($in_query)) && isset($in_query['test']) && $in_query['test'] && $in_andisol_instance->manager()) {
-                if ($in_andisol_instance->get_chameleon_instance()->check_login_exists_by_login_string(trim($login_id_list[0]))) {
+                if ($in_andisol_instance->check_login_exists_by_login_string(trim($login_id_list[0]))) {
                     $ret = ['login_exists' => true];
                 } else {
                     $ret = ['login_exists' => false];
@@ -247,8 +247,8 @@ class CO_people_Basalt_Plugin extends A_CO_Basalt_Plugin {
             }
         } else {    // They want the list of all of them.
             $login_id_list = $in_andisol_instance->get_all_login_users();
-            if ($in_andisol_instance->get_cobra_instance()) {
-                $login_id_list = $in_andisol_instance->get_cobra_instance()->get_all_logins();
+            if ($is_manager) {
+                $login_id_list = $in_andisol_instance->get_all_logins();
                 if (0 < count($login_id_list)) {
                     foreach ($login_id_list as $login_instance) {
                         if (isset($login_instance) && ($login_instance instanceof CO_Security_Login) && (!$writeable || $login_instance->user_can_write())) {
@@ -321,7 +321,7 @@ class CO_people_Basalt_Plugin extends A_CO_Basalt_Plugin {
                 }
             }
         } elseif ($in_andisol_instance->manager()) {  // Must have a COBRA instance, and be a manager
-            $login_id_list = $in_andisol_instance->get_cobra_instance()->get_all_logins();
+            $login_id_list = $in_andisol_instance->get_all_logins();
             if (0 < count($login_id_list)) {
                 foreach ($login_id_list as $login_instance) {
                     if (isset($login_instance) && ($login_instance instanceof CO_Security_Login) && $login_instance->user_can_write()) {
@@ -412,9 +412,7 @@ class CO_people_Basalt_Plugin extends A_CO_Basalt_Plugin {
         
                 $result = true;
             
-                $cobra_instance = $in_andisol_instance->get_cobra_instance();
-            
-                if (isset($cobra_instance) && ($cobra_instance instanceof CO_Cobra)) {
+                if ($is_manager) {
                     $new_login = NULL;
                 
                     $password = isset($params['password']) ? $params['password'] : NULL;
@@ -426,9 +424,9 @@ class CO_people_Basalt_Plugin extends A_CO_Basalt_Plugin {
                     $tokens = isset($params['tokens']) ? $params['tokens'] : NULL;
                 
                     if ($is_manager) {
-                        $new_login = $cobra_instance->create_new_manager_login($login_string, $password, $tokens);
+                        $new_login = $in_andisol_instance->create_new_manager_login($login_string, $password, $tokens);
                     } else {
-                        $new_login = $cobra_instance->create_new_standard_login($login_string, $password, $tokens);
+                        $new_login = $in_andisol_instance->create_new_standard_login($login_string, $password, $tokens);
                     }
                 
                     if ($new_login instanceof CO_Security_Login) {
@@ -678,15 +676,15 @@ class CO_people_Basalt_Plugin extends A_CO_Basalt_Plugin {
                 }
             }
             
-            if ($result && $convert_to_manager && !$login_instance->is_manager() && $in_andisol_instance->get_cobra_instance()) {
-                $result = $in_andisol_instance->get_cobra_instance()->convert_login($login_instance->login_id, true);
+            if ($result && $convert_to_manager && !$login_instance->is_manager()) {
+                $result = $in_andisol_instance->convert_login($login_instance->login_id, true);
                 if ($result) {
                     $login_changed = true;
                 }
             }
             
-            if ($result && $convert_to_login && $login_instance->is_manager() && $in_andisol_instance->get_cobra_instance()) {
-                $result = $in_andisol_instance->get_cobra_instance()->convert_login($login_instance->login_id, false);
+            if ($result && $convert_to_login && $login_instance->is_manager()) {
+                $result = $in_andisol_instance->convert_login($login_instance->login_id, false);
                 if ($result) {
                     $login_changed = true;
                 }

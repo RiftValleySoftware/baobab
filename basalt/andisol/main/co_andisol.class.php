@@ -25,7 +25,7 @@
 */
 defined( 'LGV_ANDISOL_CATCHER' ) or die ( 'Cannot Execute Directly' );	// Makes sure that this file is in the correct context.
 
-define('__ANDISOL_VERSION__', '1.0.5.3000');
+define('__ANDISOL_VERSION__', '1.0.6.3000');
 
 if (!defined('LGV_ACCESS_CATCHER')) {
     define('LGV_ACCESS_CATCHER', 1);
@@ -683,6 +683,34 @@ class CO_Andisol {
     
     /***********************/
     /**
+    This is the public function used to create a new standard login in the security database.
+    This can only be called from a login manager.
+    
+    \returns the new CO_Cobra_Login instance.
+     */
+    public function create_new_standard_login(  $in_login_id,                   ///< The login ID as text. It needs to be unique, within the Security database, and this will fail, if it is not.
+                                                $in_cleartext_password,         ///< The password to set (in cleartext). It will be stored as a hashed password.
+                                                $in_security_token_ids = NULL   ///< An array of integers. These are security token IDs for the login (default is NULL). If NULL, then no IDs will be set. These IDs must be selected from those available to the currently logged-in manager.
+                                            ) {
+        return $this->get_cobra_instance()->create_new_standard_login($in_login_id, $in_cleartext_password, $in_security_token_ids);
+    }
+    
+    /***********************/
+    /**
+    This is the public function used to create a new login manager login in the security database.
+    This can only be called from a login manager.
+    
+    \returns the new CO_Login_Manager instance.
+     */
+    public function create_new_manager_login(   $in_login_id,                   ///< The login ID as text. It needs to be unique, within the Security database, and this will fail, if it is not.
+                                                $in_cleartext_password,         ///< The password to set (in cleartext). It will be stored as a hashed password.
+                                                $in_security_token_ids = NULL   ///< An array of integers. These are security token IDs for the login (default is NULL). If NULL, then no IDs will be set. These IDs must be selected from those available to the currently logged-in manager.
+                                            ) {
+        return $this->get_cobra_instance()->create_new_manager_login($in_login_id, $in_cleartext_password, $in_security_token_ids, true);
+    }
+    
+    /***********************/
+    /**
     This method can only be called if the user is logged in as a Login Manager (or God).
     This creates a new login and user collection.
     Upon successful completion, both a new login, and a user collection, based upon that login, now exist.
@@ -928,6 +956,20 @@ class CO_Andisol {
         }
         
         return $ret;
+    }
+    
+    /***********************/
+    /**
+    This is the public function used to convert a login to (or from) a manager, in the security database.
+    This can only be called from a login manager.
+    The user is not affected, and the login IDs (tokens) are also left "as is."
+    
+    \returns the converted instance.
+     */
+    public function convert_login(  $in_login_id,                   ///< The login ID as text. This must be for a login that can be managed by the current manager.
+                                    $in_is_login_manager = false    ///< If true, then this is a "promotion" to a a manager. If false (default), then this is a "demotion" to a standard user.
+                                ) {
+        return $this->get_cobra_instance()->convert_login($in_login_id, $in_is_login_manager);
     }
     
     /***********************/

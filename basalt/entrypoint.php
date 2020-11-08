@@ -37,5 +37,7 @@ if (class_exists('CO_Config')) {
 }
 
 function run_basalt() {
-    $basalt_instance = new CO_Basalt();
+    ob_start("ob_gzhandler");
+        $basalt_instance = new CO_Basalt();
+    ob_end_flush();
 }
