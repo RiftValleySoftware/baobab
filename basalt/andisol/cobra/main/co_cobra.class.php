@@ -25,7 +25,7 @@
 */
 defined( 'LGV_ACCESS_CATCHER' ) or die ( 'Cannot Execute Directly' );	// Makes sure that this file is in the correct context.
 
-define('__COBRA_VERSION__', '1.0.4.3000');
+define('__COBRA_VERSION__', '1.0.5.3000');
 
 require_once(CO_Config::chameleon_main_class_dir().'/co_chameleon.class.php');
 
@@ -110,22 +110,22 @@ class CO_Cobra {
             if (($in_is_login_manager && !$working_login->is_manager()) || (!$in_is_login_manager && $working_login->is_manager())) {
                 $className = $in_is_login_manager ? 'CO_Login_Manager' : 'CO_Cobra_Login';
                 $user_object = $this->get_user_from_login($working_login->id());    // Get this, so we can modify it.
-                
+            
                 // Create a new blank instance.
                 $new_login_object = $this->_chameleon_instance->make_new_blank_record($className);
-                
+            
                 if (isset($new_login_object) && ($new_login_object instanceof CO_Cobra_Login)) {
                     $original_login_id = $working_login->id();
                     $original_ids = $working_login->ids();
                     if (!isset($original_ids)) {
                         $original_ids = [];
                     }
-                    
+                
                     array_push($original_ids, $original_login_id);    // We will add this to the new login's IDs.
                     $original_ids = array_unique($original_ids);
-                    
+                
                     asort($original_ids);
-                    
+                
                     $new_login_object->login_id = $working_login->login_id;
                     $new_login_object->name = $working_login->name;
                     $new_login_object->context = $working_login->context;
@@ -135,22 +135,21 @@ class CO_Cobra {
                     if ($working_login->delete_from_db()) {
                         if ($new_login_object->update_db()) {
                             $new_id = $new_login_object->id();
-                            if ($this->_chameleon_instance->get_login_item()->add_new_login_id($new_id)) {
-                                $new_login_object->read_security_id = $new_id;
-                                $new_login_object->write_security_id = $new_id;
-                                if ($new_login_object->update_db()) {
-                                    $user_object->write_security_id = $new_id;
-                                    $user_object->set_login($new_id);
-                                    if ($user_object->update_db()) {
-                                        $ret = $new_login_object;   // If everything went well, to this point, we update the return.
-                                    } else {
-                                        $this->error = $user_object->error;
-                                    }
+                            if (method_exists($manager, 'add_new_login_id')) {  // We only add the ID, if we are a manager object. God doesn't need this.
+                                $manager->add_new_login_id($new_id);
+                            }
+                            $new_login_object->read_security_id = $new_id;
+                            $new_login_object->write_security_id = $new_id;
+                            if ($new_login_object->update_db()) {
+                                $user_object->write_security_id = $new_id;
+                                $user_object->set_login($new_id);
+                                if ($user_object->update_db()) {
+                                    $ret = $new_login_object;   // If everything went well, to this point, we update the return.
                                 } else {
-                                    $this->error = $new_login_object->error;
+                                    $this->error = $user_object->error;
                                 }
                             } else {
-                                $this->error = $this->_chameleon_instance->error;
+                                $this->error = $new_login_object->error;
                             }
                         } else {
                             $this->error = $new_login_object->error;
@@ -158,7 +157,7 @@ class CO_Cobra {
                     } else {
                         $this->error = $working_login->error;
                     }
-                }                
+                }
             }
         }
         
