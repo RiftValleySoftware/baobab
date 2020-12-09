@@ -1305,12 +1305,20 @@ class CO_people_Basalt_Plugin extends A_CO_Basalt_Plugin {
         
         $login_id = (isset($in_query['login_id']) && trim($in_query['login_id'])) ? trim($in_query['login_id']) : NULL;
         $in_login_user = $in_login_user || (NULL != $login_id); // Supplying a login ID also means creating a new login.
+        // If this is set, then it means that the new ID should be created with a "private" token, that is not given to the manager that creates it. Ignored, if "login_id" is not also set.
+        $private_token = ($login_id && (isset($in_query['private_token']) && trim($in_query['private_token']))) ? TRUE : FALSE;
         
         $ret = ['new_user'];
         $password = NULL;
         
         if (isset($in_query['login_id'])) {
             unset($in_query['login_id']);
+        }
+        
+        if ($private_token) {
+            $in_query['private_token'] = TRUE;
+        } elseif (isset($in_query['private_token'])) {
+            unset($in_query['private_token']);
         }
         
         $password = isset($in_query) && is_array($in_query) && isset($in_query['password']) && trim($in_query['password']) ? trim($in_query['password']) : NULL;
@@ -1534,7 +1542,9 @@ class CO_people_Basalt_Plugin extends A_CO_Basalt_Plugin {
             $show_details = true;
         }
         
-        if (isset($my_info) && $my_info) {  // If we are just asking after our own info, then we just send that back.
+        if (isset($in_query['get_all_visible_users'])) {    // The first thing we check for, is to see if this is a simple request to return the IDs and names of all visible users.
+            $ret['get_all_visible_users'] = $in_andisol_instance->get_all_visible_users();
+        } elseif (isset($my_info) && $my_info) {  // If we are just asking after our own info, then we just send that back.
             if ($in_andisol_instance->logged_in()) {
                 $user = $in_andisol_instance->current_user();
                 if ($user instanceof CO_User_Collection) {

@@ -25,7 +25,7 @@
 */
 defined( 'LGV_ACCESS_CATCHER' ) or die ( 'Cannot Execute Directly' );	// Makes sure that this file is in the correct context.
 
-define('__CHAMELEON_VERSION__', '1.0.4.3000');
+define('__CHAMELEON_VERSION__', '1.0.5.3000');
 
 require_once(CO_Config::badger_main_class_dir().'/co_access.class.php');
 
@@ -341,6 +341,14 @@ class CO_Chameleon extends CO_Access {
         }
         
         return $ret;
+    }
+
+    /***********************/
+    /**
+    \returns a simple associative array, indexed by user (not login) IDs, with each element being the name (usually display name) of the user object. It reurns ALL users visible to the current login.
+     */
+    public function get_all_visible_users() {
+        return $this->_data_db_object->get_all_visible_users();
     }
     
     /***********************/

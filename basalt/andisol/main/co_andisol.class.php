@@ -25,7 +25,7 @@
 */
 defined( 'LGV_ANDISOL_CATCHER' ) or die ( 'Cannot Execute Directly' );	// Makes sure that this file is in the correct context.
 
-define('__ANDISOL_VERSION__', '1.0.7.3000');
+define('__ANDISOL_VERSION__', '1.0.8.3000');
 
 if (!defined('LGV_ACCESS_CATCHER')) {
     define('LGV_ACCESS_CATCHER', 1);
@@ -1696,6 +1696,14 @@ class CO_Andisol {
     public function count_all_login_objects_with_access($in_security_token  ///< An integer, with the requested security token.
                                                         ) {
         return $this->get_chameleon_instance()->count_all_login_objects_with_access($in_security_token);
+    }
+
+    /***********************/
+    /**
+    \returns a simple associative array, indexed by user (not login) IDs, with each element being the name (usually display name) of the user object. It reurns ALL users visible to the current login.
+     */
+    public function get_all_visible_users() {
+        return $this->get_chameleon_instance()->get_all_visible_users();
     }
     
     /***********************/
