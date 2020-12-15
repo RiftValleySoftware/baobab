@@ -1544,6 +1544,8 @@ class CO_people_Basalt_Plugin extends A_CO_Basalt_Plugin {
         
         if (isset($in_query['get_all_visible_users'])) {    // The first thing we check for, is to see if this is a simple request to return the IDs and names of all visible users.
             $ret['get_all_visible_users'] = $in_andisol_instance->get_all_visible_users();
+        } elseif (isset($in_query['get_all_visible_logins'])) { // The next thing we check for, is to see if this is a simple request to return the IDs, names, and login ID of all visible logins.
+            $ret['get_all_visible_logins'] = $in_andisol_instance->get_all_visible_logins();
         } elseif (isset($my_info) && $my_info) {  // If we are just asking after our own info, then we just send that back.
             if ($in_andisol_instance->logged_in()) {
                 $user = $in_andisol_instance->current_user();
