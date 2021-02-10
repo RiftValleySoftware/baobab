@@ -1800,4 +1800,76 @@ class CO_Andisol {
                                         ) {
         return $this->get_chameleon_instance()->make_new_blank_record($in_classname);
     }
+    
+        
+    /***********************/
+    /**
+    This fetches the list of the "personal" security tokens the currently logged-in user has available.
+    This will reload any non-God Mode IDs before fetching the IDs, in order to spike privilege escalation.
+    If they have God Mode, then you're pretty much screwed, anyway.
+    
+    \returns an array of integers, with each one representing a personal security token.
+     */
+    public function get_personal_security_ids() {
+        $ret = Array();
+        return $ret;
+    }
+    
+    /***********************/
+    /**
+    This returns just the "personal" IDs for ALL logins, EXCEPT for the given ID.
+    
+    This should only be called from the ID fetcher in the access class, as it does not do a security predicate.
+    
+    \returns an array of integers, each, a personal security ID.
+     */
+    public function get_all_personal_ids_except_for_id( $in_id = 0  ///< The integer ID of the row we want exempted. If not specified, then all IDs are returned.
+                                                        ) {
+        return [];
+    }
+    
+    /***********************/
+    /**
+    This checks an ID, to see if it is a personal ID.
+    
+    \returns true, if the ID is a personal ID.
+     */
+    public function is_this_a_personal_id(  $in_id  ///< The ID we are checking. Must be greater than 1.
+                                            ) {
+        return false;
+    }
+    
+    /***********************/
+    /**
+    This adds a personal token from one ID's pool, to the regular ID pool of another ID.
+    
+     \returns true, if the operation was successful.
+     */
+    public function add_personal_token_from_current_login(  $in_to_id,  ///< The ID of the object we are affecting.
+                                                            $in_id      ///< The ID (personal token) to be added.
+                                                            ) {
+        return false;
+    }
+    
+    /***********************/
+    /**
+    This removes a token that is owned by one ID, from another ID.
+    
+     \returns true, if the operation was successful.
+     */
+    public function remove_personal_token_from_this_login(  $in_to_id,  ///< The ID of the object we are affecting.
+                                                            $in_id      ///< The ID (personal token) to be removed.
+                                                            ) {
+        return false;
+    }
+    
+    /***********************/
+    /**
+    This returns IDs that have our personal IDs.
+    
+    \returns an associative array of arrays of integer, keyed by integer. The key is the ID of the login, and the value is an array of integer, with the IDs that match. NULL, if an error.
+     */
+    public function get_logins_that_have_any_of_my_ids() {
+    }
+
 };
