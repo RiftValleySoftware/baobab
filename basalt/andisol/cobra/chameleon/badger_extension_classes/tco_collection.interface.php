@@ -187,11 +187,13 @@ trait tCO_Collection {
         if ($this->user_can_write() ) { // You cannot add to a collection if you don't have write privileges.
             $i_have_a_daddy = false;
             
-            foreach ($in_element_array as $element) {
-                // We can't insert nested collections.
-                if (method_exists($element, 'insertElement') && $this->areYouMyDaddy($element)) {
-                    $i_have_a_daddy = true;
-                    break;
+            if (is_array($in_element_array) && count($in_element_array)) {
+                foreach ($in_element_array as $element) {
+                    // We can't insert nested collections.
+                    if (method_exists($element, 'insertElement') && $this->areYouMyDaddy($element)) {
+                        $i_have_a_daddy = true;
+                        break;
+                    }
                 }
             }
             
@@ -217,13 +219,19 @@ trait tCO_Collection {
                     $after_array = array_slice($this->_container, $end_count, false);
                 }
                 
+                if (!isset($in_element_array) || !is_array($in_element_array) || !count($in_element_array)) {
+                    $in_element_array = [];
+                }
+                
                 $merged = array_merge($before_array, $in_element_array, $after_array);
                 
                 $unique  = array();
-
-                foreach ($merged as $current) {
-                    if (!in_array($current, $unique)) {
-                        $unique[] = $current;
+                
+                if (is_array($merged) && count($merged)) {
+                    foreach ($merged as $current) {
+                        if (!in_array($current, $unique)) {
+                            $unique[] = $current;
+                        }
                     }
                 }
                 

@@ -3,7 +3,7 @@
 /**
     Badger Hardened Baseline Database Component
     
-    © Copyright 2018, The Great Rift Valley Software Company
+    © Copyright 2021, The Great Rift Valley Software Company
     
     LICENSE:
     
@@ -86,6 +86,11 @@ abstract class A_CO_DB {
             $this->_security_db_object = NULL;
         }
         
+// Commented out, but useful for debug.
+// echo('SQL:<pre>'.htmlspecialchars(print_r($in_sql, true)).'</pre>');
+// echo('Params:<pre>'.htmlspecialchars(print_r($in_parameters, true)).'</pre>');
+// echo('RESULT:<pre>'.htmlspecialchars(print_r($ret, true)).'</pre>');
+// echo('ERROR:<pre>'.htmlspecialchars(print_r($this->error, true)).'</pre>');
         return $ret;
     }
     
@@ -464,7 +469,7 @@ abstract class A_CO_DB {
         $sql  .= ')';
 
         $temp = $this->execute_query($sql, $params);
-// // Commented out, but useful for debug.
+// Commented out, but useful for debug.
 // echo('SQL:<pre>'.htmlspecialchars(print_r($sql, true)).'</pre>');
 // echo('PARAMS:<pre>'.htmlspecialchars(print_r($params, true)).'</pre>');
 // echo('RESPONSE:<pre>'.htmlspecialchars(print_r($temp, true)).'</pre>');
@@ -605,9 +610,9 @@ abstract class A_CO_DB {
             if (isset($temp) && $temp && is_array($temp) && (1 == count($temp)) ) { // If we  got a record, then we'll be updating it.
                 $ret = intval($temp[0]);    // Get the original value.
                 
-                $sql = 'UPDATE '.$this->table_name.' SET read_security_id=-2 WHERE id='.$in_record_id;
+                $sql = 'UPDATE '.$this->table_name.' SET read_security_id=-2 WHERE id=?';
         
-                $temp = $this->execute_query($sql, Array());
+                $temp = $this->execute_query($sql, Array($in_record_id));
                 
                 if ($this->error) { // If we had an error, we return squat.
                     $ret = 0;
@@ -648,9 +653,13 @@ abstract class A_CO_DB {
                     $sql = 'SELECT * FROM '.$this->table_name.' WHERE '.$predicate.'id='.$id;
 
                     $temp = $this->execute_query($sql, Array());
-                
+
                     if (isset($temp) && $temp && is_array($temp) && (1 == count($temp)) ) { // If we  got a record, then we'll be updating it.
                         $sql = 'UPDATE '.$this->table_name.'';
+                        if (!CO_Config::$use_personal_tokens) {
+                            unset($params_associative_array['personal_ids']); // We do not change the personal ID column, if we don't have it enabled.
+                        }
+                        
                         unset($params_associative_array['id']); // We remove the ID parameter. That can't be changed.
                         
                         $params = array_values($params_associative_array);
@@ -683,6 +692,9 @@ abstract class A_CO_DB {
                     
                     if (isset($temp) && $temp && is_array($temp) && count($temp) ) {
                         $sql = 'INSERT INTO '.$this->table_name.'';
+                        if (!CO_Config::$use_personal_tokens) {
+                            unset($params_associative_array['personal_ids']); // We do not change the personal ID column, if we don't have it enabled.
+                        }
                         unset($params_associative_array['id']);
                         
                         // If there is no read ID specified, it becomes public.
@@ -691,7 +703,7 @@ abstract class A_CO_DB {
                         }
                         
                         // If there is no write ID specified, then we simply take the first one off the list.
-                        if (!isset($params_associative_array['write_security_id'])) {
+                        if (!isset($params_associative_array['write_security_id']) && isset($access_ids[1])) {
                             $params_associative_array['write_security_id'] = $access_ids[1];
                         }
                         

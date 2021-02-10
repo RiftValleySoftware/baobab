@@ -3,7 +3,7 @@
 /**
     BADGER Hardened Baseline Database Component
     
-    © Copyright 2018, The Great Rift Valley Software Company
+    © Copyright 2021, The Great Rift Valley Software Company
     
     LICENSE:
     
@@ -25,7 +25,7 @@
 */
 defined( 'LGV_ACCESS_CATCHER' ) or die ( 'Cannot Execute Directly' );	// Makes sure that this file is in the correct context.
 
-define('__BADGER_VERSION__', '1.0.7.3000');
+define('__BADGER_VERSION__', '1.1.0.3000');
 
 if ( !defined('LGV_MD_CATCHER') ) {
     define('LGV_MD_CATCHER', 1);
@@ -217,7 +217,8 @@ class CO_Access {
     
     \returns an array of integers, with each one representing a security token. The first element will always be the ID of the user.
      */
-    public function get_security_ids() {
+    public function get_security_ids($no_personal = false   ///< This is optional. If we DO NOT want personal tokens included, this should be set to true. Default is false (include personal tokens).
+                                    ) {
         $ret = Array();
         
         if ($this->god_mode()) {
@@ -225,16 +226,14 @@ class CO_Access {
         } else {
             $login_id = $this->get_login_id();
             if (isset($login_id) && $login_id && $this->_security_db_object) {
-                $ret = $this->_security_db_object->get_security_ids_for_id($this->get_login_id());
+                $ret = $this->_security_db_object->get_security_ids_for_id($this->get_login_id(), $no_personal);
                 
                 if ($this->_security_db_object->error) {
                     $this->error = $this->_security_db_object->error;
                     
                     $ret = Array();
                 } else {
-                    $ret[] = 1;
-                    $ret = array_unique($ret);
-                    sort($ret);
+                    array_unshift($ret, 1); // We always add 1, as that's the "all logged-in users" token.
                 }
             }
         }
@@ -243,11 +242,151 @@ class CO_Access {
     
     /***********************/
     /**
-    This is pretty much the same as above, except wit the God Mode, you get all the security tokens instead of -1.
+    This fetches the list of the "personal" security tokens the currently logged-in user has available.
+    This will reload any non-God Mode IDs before fetching the IDs, in order to spike privilege escalation.
+    If they have God Mode, then you're pretty much screwed, anyway.
+    
+    \returns an array of integers, with each one representing a personal security token.
+     */
+    public function get_personal_security_ids() {
+        $ret = Array();
+        
+        if (CO_Config::$use_personal_tokens) {
+            $login_id = $this->get_login_id();
+            if (isset($login_id) && $login_id && $this->_security_db_object) {
+                $ret = $this->_security_db_object->get_personal_ids_for_id($this->get_login_id());
+                
+                if ($this->_security_db_object->error) {
+                    $this->error = $this->_security_db_object->error;
+                    $ret = Array();
+                }
+            }
+        }
+        return $ret;
+    }
+    
+    /***********************/
+    /**
+    This returns just the "personal" IDs for ALL logins, EXCEPT for the given ID.
+    
+    This should only be called from the ID fetcher in the access class, as it does not do a security predicate.
+    
+    \returns an array of integers, each, a personal security ID.
+     */
+    public function get_all_personal_ids_except_for_id( $in_id = 0  ///< The integer ID of the row we want exempted. If not specified, then all IDs are returned.
+                                                        ) {
+        $ret = $this->_security_db_object->get_all_personal_ids_except_for_id($in_id);
+    
+        if ($this->_security_db_object->error) {
+            $this->error = $this->_security_db_object->error;
+            $ret = Array();
+        }
+        
+        return $ret;
+        
+        return [];
+    }
+    
+    /***********************/
+    /**
+    This checks an ID, to see if it is a personal ID.
+    
+    \returns true, if the ID is a personal ID.
+     */
+    public function is_this_a_personal_id(  $in_id  ///< The ID we are checking. Must be greater than 1.
+                                            ) {
+        $ret = $this->_security_db_object->is_this_a_personal_id($in_id);
+
+        if ($this->_security_db_object->error) {
+            $this->error = $this->_security_db_object->error;
+        } else {
+            return $ret;
+        }
+
+        return false;
+    }
+    
+    /***********************/
+    /**
+    This adds a personal token from one ID's pool, to the regular ID pool of another ID.
+    
+     \returns true, if the operation was successful.
+     */
+    public function add_personal_token_from_current_login(  $in_to_id,  ///< The ID of the object we are affecting.
+                                                            $in_id      ///< The ID (personal token) to be added.
+                                                            ) {
+        if (in_array($in_id, $this->get_personal_security_ids())) {
+            $ret = $this->_security_db_object->add_personal_token_from_current_login($in_to_id, $in_id);
+
+            if ($this->_security_db_object->error) {
+                $this->error = $this->_security_db_object->error;
+            } else {
+                return $ret;
+            }
+        }
+        
+        return false;
+    }
+    
+    /***********************/
+    /**
+    This removes a token that is owned by one ID, from another ID.
+    
+     \returns true, if the operation was successful.
+     */
+    public function remove_personal_token_from_this_login(  $in_to_id,  ///< The ID of the object we are affecting.
+                                                            $in_id      ///< The ID (personal token) to be removed.
+                                                            ) {
+        if (in_array($in_id, $this->get_personal_security_ids())) {
+            $ret = $this->_security_db_object->remove_personal_token_from_this_login($in_to_id, $in_id);
+
+            if ($this->_security_db_object->error) {
+                $this->error = $this->_security_db_object->error;
+            } else {
+                return $ret;
+            }
+        }
+        
+        return false;
+    }
+    
+    /***********************/
+    /**
+    This returns IDs that have our personal IDs.
+    
+    \returns an associative array of arrays of integer, keyed by integer. The key is the ID of the login, and the value is an array of integer, with the IDs that match. NULL, if an error.
+     */
+    public function get_logins_that_have_any_of_my_ids() {
+        return $this->_security_db_object->get_logins_that_have_any_of_my_ids();
+    }
+            
+    /***********************/
+    /**
+    This checks an ID, to see if it is a login ID.
+    
+    \returns true, if the ID is a login ID.
+     */
+    public function is_this_a_login_id( $in_id  ///< The ID we are checking. Must be greater than 1.
+                                            ) {
+        $ret = $this->_security_db_object->is_this_a_login_id($in_id);
+
+        if ($this->_security_db_object->error) {
+            $this->error = $this->_security_db_object->error;
+        } else {
+            return $ret;
+        }
+
+        return false;
+    }
+    
+    /***********************/
+    /**
+    This is pretty much the same as above, except with the God Mode, you get all the security tokens instead of -1.
     
     \returns an array of integers, with each one representing a security token. The first element will always be the ID of the user.
      */
-    public function get_available_tokens() {
+    public function get_available_tokens($no_personal = false   ///< This is optional. If we DO NOT want personal tokens included, this should be set to true. Default is false (include personal tokens).
+                                        ) {
         $ret = Array();
         
         if ($this->god_mode()) {
@@ -259,7 +398,7 @@ class CO_Access {
         } else {
             $login_id = $this->get_login_id();
             if (isset($login_id) && $login_id && $this->_security_db_object) {
-                $ret = $this->_security_db_object->get_security_ids_for_id($this->get_login_id());
+                $ret = $this->_security_db_object->get_security_ids_for_id($this->get_login_id(), $no_personal);
                 
                 if ($this->_security_db_object->error) {
                     $this->error = $this->_security_db_object->error;
@@ -537,7 +676,6 @@ class CO_Access {
         
         if (isset($this->_data_db_object) && $this->_data_db_object) {
             $ret = $this->_data_db_object->get_multiple_records_by_id($in_id_array);
-        
             if ($this->_data_db_object->error) {
                 $this->error = $this->_data_db_object->error;
                 

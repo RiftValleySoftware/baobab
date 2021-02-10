@@ -3,7 +3,7 @@
 /**
     Badger Hardened Baseline Database Component
     
-    © Copyright 2018, The Great Rift Valley Software Company
+    © Copyright 2021, The Great Rift Valley Software Company
     
     LICENSE:
     
@@ -60,31 +60,360 @@ class CO_Security_DB extends A_CO_DB {
     
     \returns an array of integers, each, a security ID for the given login, and the first element is always the login ID itself.
      */
-    public function get_security_ids_for_id(    $in_id  ///< The integer ID of the row.
+    public function get_security_ids_for_id(    $in_id,         ///< The integer ID of the row.
+                                                $no_personal    ///< This is optional. If we DO NOT want personal tokens included, this should be set to true.
                                             ) {
         $ret = NULL;
         
-        $sql = 'SELECT ids FROM '.$this->table_name.' WHERE (login_id IS NOT NULL) AND (id='.intval($in_id).')';
-
-        $temp = $this->execute_query($sql, Array());
+        $fetch_sql = "ids";
+        if (CO_Config::$use_personal_tokens && !$no_personal) {
+            $fetch_sql .= ",personal_ids";
+        } else {
+            $no_personal = false;
+        }
+        
+        $sql = 'SELECT '.$fetch_sql.' FROM '.$this->table_name.' WHERE (access_class LIKE \'%Login%\') AND (login_id IS NOT NULL) AND (id=?)';
+        $params = Array(intval($in_id));
+        $temp = $this->execute_query($sql, $params);
+// Commented out, but useful for debug.
+// echo('SQL:<pre>'.htmlspecialchars(print_r($sql, true)).'</pre>');
+// echo('PARAMS:<pre>'.htmlspecialchars(print_r($params, true)).'</pre>');
+// echo('RESPONSE:<pre>'.htmlspecialchars(print_r($temp, true)).'</pre>');
+// echo('<pre>'.($no_personal ? 'NO ' : '').'PERSONAL</pre>');
+// echo('ERROR:<pre>'.htmlspecialchars(print_r($this->error, true)).'</pre>');
         if (isset($temp) && $temp && is_array($temp) && count($temp) ) {
-            $ret = explode(',', $temp[0]['ids']);
+            $ret = isset($temp[0]['ids']) ? explode(',', $temp[0]['ids']) : [];
+            if (!$no_personal && isset($temp[0]['personal_ids'])) {
+                $ret_temp = explode(',', $temp[0]['personal_ids']);
+                foreach ($ret_temp as $i) {
+                    if (0 < $i) {
+                        array_push($ret, $i);
+                    }
+                }
+            }
             if (isset($ret) && is_array($ret) && count($ret)) {
-                array_unshift($ret, $in_id);
                 $ret = array_unique(array_map('intval', $ret));
                 $ret_temp = Array();
-                foreach ( $ret as $i) {
+                foreach ($ret as $i) {
                     if (0 < $i) {
                         array_push($ret_temp, $i);
                     }
                 }
+                sort($ret_temp);
                 $ret = $ret_temp;
             }
+            array_unshift($ret, $in_id);
         } else {
             $ret = Array($in_id);
         }
         
         return $ret;
+    }
+    
+    /***********************/
+    /**
+    This adds a personal token, from one record, to the IDs of another record.
+    This is a somewhat dangerous call, as it does not use a security predicate. That's deliberate, as we need to be able to change the security IDs of an item without necessarily being allowed to affect it.
+     \returns true, if the operation was successful.
+     */
+    public function add_personal_token_from_current_login(  $in_to_id,  ///< The ID of the object we are affecting.
+                                                            $in_id      ///< The ID (personal token) to be added.
+                                                            ) {
+        $in_to_id = intval($in_to_id);
+        $in_id = intval($in_id);
+        // If the current login does not own the given ID as a personal token, then we can't proceed.
+        if (CO_Config::$use_personal_tokens) {
+            $sql = 'SELECT ids FROM '.$this->table_name.' WHERE (id=?)';
+            $params = [$in_to_id];
+            $temp = $this->execute_query($sql, $params);
+            if (isset($temp) && $temp && is_array($temp) && count($temp) ) {
+                $ret = explode(',', $temp[0]['ids']);
+                
+                if (isset($ret) && is_array($ret)) {
+                    $ret = array_map('intval', $ret);
+                    $ret[] = $in_id;
+                    sort($ret);
+                    $ret = array_unique($ret);
+                    $new_ids = implode(',', array_unique($ret));
+
+                    $sql = 'UPDATE '.$this->table_name.' SET ids=? WHERE id=?';
+                    $params = [$new_ids, $in_to_id];
+                    $this->execute_query($sql, $params, true);
+                    if ($this->error == NULL) {
+                        return true;
+                    };
+                }
+            } else {
+                $ret = Array();
+            }
+        }
+        
+        return false;
+    }
+    
+    /***********************/
+    /**
+    This removes a personal token, from one record.
+    This is a somewhat dangerous call, as it does not use a security predicate. That's deliberate, as we need to be able to change the security IDs of an item without necessarily being allowed to affect it.
+     \returns true, if the operation was successful.
+     */
+    public function remove_personal_token_from_this_login(  $in_to_id,  ///< The ID of the object we are affecting.
+                                                            $in_id      ///< The ID (personal token) to be removed.
+                                                            ) {
+        $in_to_id = intval($in_to_id);
+        $in_id = intval($in_id);
+        // If the current login does not own the given ID as a personal token, then we can't proceed.
+        if (CO_Config::$use_personal_tokens) {
+            $sql = 'SELECT ids FROM '.$this->table_name.' WHERE (id=?)';
+            $params = [$in_to_id];
+            $temp = $this->execute_query($sql, $params);
+            if (isset($temp) && $temp && is_array($temp) && count($temp) ) {
+                $ret = explode(',', $temp[0]['ids']);
+                
+                if (isset($ret) && is_array($ret)) {
+                    $return = false;
+                    $ret = array_unique(array_map('intval', $ret));
+                    sort($ret);
+                    
+                    if (($key = array_search($in_id, $ret)) !== false) {
+                        $return = true;
+                        unset($ret[$key]);
+                    }
+                    
+                    $new_ids = implode(',', $ret);
+
+                    $sql = 'UPDATE '.$this->table_name.' SET ids=? WHERE id=?';
+                    $params = [$new_ids, $in_to_id];
+                    $this->execute_query($sql, $params, true);
+                    if ($this->error == NULL) {
+                        return $return;
+                    };
+                }
+            } else {
+                $ret = Array();
+            }
+        }
+        
+        return false;
+    }
+    
+    /***********************/
+    /**
+    This returns just the "personal" IDs for the given ID.
+    
+    This should only be called from the ID fetcher in the access class, as it does not do a security predicate.
+    
+    \returns an array of integers, each, a personal security ID for the given login.
+     */
+    public function get_personal_ids_for_id(    $in_id  ///< The integer ID of the row.
+                                            ) {
+        $ret = NULL;
+        
+        if (!CO_Config::$use_personal_tokens) {
+            return $ret;
+        }
+        
+        $sql = 'SELECT personal_ids FROM '.$this->table_name.' WHERE (access_class LIKE \'%Login%\') AND (login_id IS NOT NULL) AND (id=?)';
+
+        $temp = $this->execute_query($sql, Array(intval($in_id)));
+        if (isset($temp) && $temp && is_array($temp) && count($temp) ) {
+            $ret = explode(',', $temp[0]['personal_ids']);
+            if (isset($ret) && is_array($ret) && count($ret)) {
+                $ret = array_unique(array_map('intval', $ret));
+                $ret_temp = Array();
+                foreach ($ret as $i) {
+                    if (0 < $i) {
+                        array_push($ret_temp, $i);
+                    }
+                }
+                sort($ret_temp);
+                $ret = $ret_temp;
+            }
+        } else {
+            $ret = Array();
+        }
+        
+        return $ret;
+    }
+    
+    /***********************/
+    /**
+    This returns just the "personal" IDs for ALL logins, EXCEPT for the given ID.
+    
+    This should only be called from the ID fetcher in the access class, as it does not do a security predicate.
+    
+    \returns an array of integers, each, a personal security ID.
+     */
+    public function get_all_personal_ids_except_for_id( $in_id = 0  ///< The integer ID of the row we want exempted. If not specified, then all IDs are returned.
+                                                        ) {
+        $ret = NULL;
+        
+        if (!CO_Config::$use_personal_tokens) {
+            return $ret;
+        }
+        
+        $sql = 'SELECT personal_ids FROM '.$this->table_name.' WHERE (access_class LIKE \'%Login%\') AND (login_id IS NOT NULL) AND (id<>?)';
+
+        $temp = $this->execute_query($sql, Array(intval($in_id)));
+        if (isset($temp) && $temp && is_array($temp) && count($temp) ) {
+            $ret = "";
+            foreach ($temp as $i) {
+                if ($i['personal_ids']) {
+                    if ($ret) {
+                        $ret .= ",";
+                    }
+                    $ret .= $i['personal_ids'];
+                }
+            }
+            $ret = explode(",", $ret);
+            if (isset($ret) && is_array($ret) && count($ret)) {
+                $ret = array_unique(array_map('intval', $ret));
+                $ret_temp = Array();
+                foreach ($ret as $i) {
+                    if (0 < $i) {
+                        array_push($ret_temp, $i);
+                    }
+                }
+                sort($ret_temp);
+                $ret = $ret_temp;
+            }
+        } else {
+            $ret = Array();
+        }
+        
+        return $ret;
+    }
+    
+    /***********************/
+    /**
+    This returns IDs that have our personal IDs.
+    
+    \returns an associative array of arrays of integer, keyed by integer. The key is the ID of the login, and the value is an array of integer, with the IDs that match. NULL, if an error.
+     */
+    public function get_logins_that_have_any_of_my_ids() {
+        $ret = NULL;
+        
+        // Will not work for God Mode, as God doesn't have personal IDs.
+        if (!CO_Config::$use_personal_tokens || $this->access_object->god_mode()) {
+            return $ret;
+        }
+        
+        // We can only check personal IDs relevant to our login. 
+        $in_ids = $this->access_object->get_personal_security_ids();
+        $in_id = $this->access_object->get_login_id();
+        
+        $sql = 'SELECT id,ids FROM '.$this->table_name.' WHERE (access_class LIKE \'%Login%\') AND (login_id IS NOT NULL) AND (id<>?)';
+
+        $temp = $this->execute_query($sql, Array(intval($in_id)));
+        if (isset($temp) && $temp && is_array($temp) && count($temp) ) {
+            $ret = [];
+            foreach ($temp as $i) {
+                $tmp = [];
+                if (isset($i['id']) && $i['id'] && isset($i['ids']) && $i['ids']) {
+                    $key = intval($i['id']);
+                    $ids = array_unique(array_map('intval', explode(',', $i['ids'])));
+                    if (1 < $key && count($ids)) {
+                        sort($ids);
+                        $tmp_ids = [];
+                        foreach($ids as $tmp_id) {
+                            if (in_array($tmp_id, $in_ids)) {
+                                $tmp_ids[] = $tmp_id;
+                            }
+                        }
+                        if (count($tmp_ids)) {
+                            $ret[$key] = $tmp_ids;
+                        }
+                    }
+                }
+            }
+        }
+        
+        return $ret;
+    }
+    
+    /***********************/
+    /**
+    This returns all of the login IDs in the database.
+    
+    This should only be called from the ID fetcher in the access class, as it does not do a security predicate.
+    
+    \returns an array of integers, each, a login ID.
+     */
+    public function get_all_login_ids() {
+        $ret = NULL;
+        
+        $sql = 'SELECT id FROM '.$this->table_name.' WHERE (access_class LIKE \'%Login%\') AND (login_id IS NOT NULL) AND (login_id<>\'\')';
+
+        $temp = $this->execute_query($sql, Array());
+        if (isset($temp) && $temp && is_array($temp) && count($temp) ) {
+            $ret = "";
+            foreach ($temp as $i) {
+                if ($i['id']) {
+                    if ($ret) {
+                        $ret .= ",";
+                    }
+                    $ret .= $i['id'];
+                }
+            }
+            $ret = explode(",", $ret);
+            if (isset($ret) && is_array($ret) && count($ret)) {
+                $ret = array_unique(array_map('intval', $ret));
+                $ret_temp = Array();
+                foreach ($ret as $i) {
+                    if (0 < $i) {
+                        array_push($ret_temp, $i);
+                    }
+                }
+                sort($ret_temp);
+                $ret = $ret_temp;
+            }
+        } else {
+            $ret = Array();
+        }
+        
+        return $ret;
+    }
+    
+    /***********************/
+    /**
+    This checks an ID, to see if it is a personal ID.
+    
+    \returns true, if the ID is a personal ID.
+     */
+    public function is_this_a_personal_id(  $in_id  ///< The ID we are checking. Must be greater than 1.
+                                            ) {
+        $in_id = intval($in_id);
+        
+        if (CO_Config::$use_personal_tokens && (1 < $in_id)) {
+            $ret = $this->get_all_personal_ids_except_for_id();
+    
+            if (!$this->error) {
+                return in_array($in_id, $ret);
+            }
+        }
+
+        return false;
+    }
+    
+    /***********************/
+    /**
+    This checks an ID, to see if it is a login ID.
+    
+    \returns true, if the ID is a login ID.
+     */
+    public function is_this_a_login_id( $in_id  ///< The ID we are checking. Must be greater than 1.
+                                        ) {
+        $in_id = intval($in_id);
+        
+        if (1 < $in_id) {
+            $ret = $this->get_all_login_ids();
+    
+            if (!$this->error) {
+                return in_array($in_id, $ret);
+            }
+        }
+
+        return false;
     }
     
     /***********************/
@@ -101,9 +430,9 @@ class CO_Security_DB extends A_CO_DB {
         $ret = false;
         
         if (intval($in_id)) {
-            $sql = 'SELECT write_security_id, ids FROM '.$this->table_name.' WHERE id='.intval($in_id);
+            $sql = 'SELECT write_security_id, ids FROM '.$this->table_name.' WHERE id=?';
 
-            $result = $this->execute_query($sql, Array());
+            $result = $this->execute_query($sql, Array(intval($in_id)));
         
             if (isset($result) && is_array($result) && (1 == count($result))) {
                 $access_ids = $this->access_object->get_security_ids();
@@ -244,9 +573,9 @@ class CO_Security_DB extends A_CO_DB {
                                             ) {
         $ret = NULL;
         
-        $sql = 'SELECT * FROM '.$this->table_name.' WHERE id='.intval($in_id);
+        $sql = 'SELECT * FROM '.$this->table_name.' WHERE id=?';
         
-        $temp = $this->execute_query($sql, Array());
+        $temp = $this->execute_query($sql, Array(intval($in_id)));
         if (isset($temp) && $temp && is_array($temp) && count($temp) ) {
             $result = $this->_instantiate_record($temp[0]);
             if ($result) {
@@ -339,7 +668,7 @@ class CO_Security_DB extends A_CO_DB {
         
         return $temp_ret;
     }
-    
+        
     /***********************/
     /**
     This is a security-vetted search for all login objects (visible to the current user).
@@ -479,8 +808,8 @@ class CO_Security_DB extends A_CO_DB {
         
         // No security predicate, but we do have to "own" the given token.
         if (($this->access_object->god_mode() && $in_security_token) || in_array($in_security_token, $this->access_object->get_security_ids())) {
-            $sql = 'SELECT * FROM '.$this->table_name.' WHERE (login_id IS NOT NULL) AND (login_id<>\'\') AND (id<>'.intval(CO_Config::god_mode_id()).')';
-            $temp = $this->execute_query($sql, Array());    // We just get everything.
+            $sql = 'SELECT * FROM '.$this->table_name.' WHERE (login_id IS NOT NULL) AND (login_id<>\'\') AND (id<>?)';
+            $temp = $this->execute_query($sql, Array(intval(CO_Config::god_mode_id())));    // We just get everything.
             if (isset($temp) && $temp && is_array($temp) && count($temp) ) {
                 $ret = 0;
                 
@@ -523,8 +852,8 @@ class CO_Security_DB extends A_CO_DB {
         
         // No security predicate, but we do have to "own" the given token.
         if (($access_instance->god_mode() && $in_security_token) || in_array($in_security_token, $access_instance->get_security_ids())) {
-            $sql = 'SELECT * FROM '.$this->table_name.' WHERE (login_id IS NOT NULL) AND (login_id<>\'\') AND (id<>'.intval(CO_Config::god_mode_id()).')';
-            $temp = $this->execute_query($sql, Array());    // We just get everything.
+            $sql = 'SELECT * FROM '.$this->table_name.' WHERE (login_id IS NOT NULL) AND (login_id<>\'\') AND (id<>?)';
+            $temp = $this->execute_query($sql, Array(intval(CO_Config::god_mode_id())));    // We just get everything.
             if (isset($temp) && $temp && is_array($temp) && count($temp) ) {
                 foreach ($temp as $result) {
                     $id = intval($result['id']);

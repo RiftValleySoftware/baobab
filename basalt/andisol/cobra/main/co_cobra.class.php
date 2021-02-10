@@ -25,7 +25,7 @@
 */
 defined( 'LGV_ACCESS_CATCHER' ) or die ( 'Cannot Execute Directly' );	// Makes sure that this file is in the correct context.
 
-define('__COBRA_VERSION__', '1.0.8.3000');
+define('__COBRA_VERSION__', '1.1.0.3000');
 
 require_once(CO_Config::chameleon_main_class_dir().'/co_chameleon.class.php');
 
@@ -33,7 +33,7 @@ if ( !defined('LGV_LANG_CATCHER') ) {
     define('LGV_LANG_CATCHER', 1);
 }
 
-require_once(CO_Config::lang_class_dir().'/common.inc.php');
+require_once(CO_Config::cobra_lang_class_dir().'/common.inc.php');
 
 /***************************************************************************************************************************/
 /**
@@ -354,7 +354,6 @@ class CO_Cobra {
                                             $in_make_user_if_necessary = false  ///< If true (Default is false), then the user will be created if it does not already exist. Ignored, if we are not a Login Manager.
                                         ) {
         $user = $this->_chameleon_instance->get_user_from_login($in_login_id);   // First, see if it's already a thing.
-        
         if (!$user && $in_make_user_if_necessary && ($this->_chameleon_instance->god_mode() || ($this->_chameleon_instance->get_login_item() instanceof CO_Login_Manager))) {   // If not, we will create a new one, based on the given login. We must be a manager.
             if (isset($in_login_id) && (0 < intval($in_login_id))) {    // See if they seek a different login.
                 $login_id = intval($in_login_id);
