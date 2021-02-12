@@ -93,7 +93,7 @@ class CO_Security_Login extends CO_Security_Node {
         $default_setup['login_id'] = $this->login_id;
         $default_setup['object_name'] = $this->login_id;
         $default_setup['api_key'] = $this->_api_key;
-        $default_setup['personal_ids'] = (CO_Config::$use_personal_tokens && (NULL != $this->_personal_ids)) ? $this->_personal_ids : '';
+        $default_setup['personal_ids'] = (CO_Config::use_personal_tokens() && (NULL != $this->_personal_ids)) ? $this->_personal_ids : '';
         $default_setup['ids'] = (NULL != $this->_ids) ? $this->_ids : '';
         
         return $default_setup;
@@ -110,10 +110,14 @@ class CO_Security_Login extends CO_Security_Node {
     protected function _build_parameter_array() {
         $ret = parent::_build_parameter_array();
         
+        if (NULL == $this->_personal_ids) {
+            $this->_personal_ids = [];
+        }
+        
         $ret['api_key'] = $this->_api_key;
         $ret['login_id'] = $this->login_id;
         $personal_ids_as_string_array = Array();
-        if (CO_Config::$use_personal_tokens) {
+        if (CO_Config::use_personal_tokens()) {
             $personal_ids_as_int = array_map('intval', $this->_personal_ids);
             sort($personal_ids_as_int);
         
@@ -173,7 +177,7 @@ class CO_Security_Login extends CO_Security_Node {
             $in_db_result['ids'] = implode(',', $in_ids);
         }
         
-        if (CO_Config::$use_personal_tokens && isset($in_personal_ids) && is_array($in_personal_ids) && count($in_personal_ids)) {
+        if (CO_Config::use_personal_tokens() && isset($in_personal_ids) && is_array($in_personal_ids) && count($in_personal_ids)) {
             $in_db_result['personal_ids'] = implode(',', $in_ids);
         }
         
@@ -227,8 +231,9 @@ class CO_Security_Login extends CO_Security_Node {
                 }
             }
 
-            $this->_personal_ids = Array();
-            if (CO_Config::$use_personal_tokens && isset($in_db_result['personal_ids']) && $in_db_result['personal_ids']) {
+            $this->_personal_ids = NULL;
+            
+            if (CO_Config::use_personal_tokens() && isset($in_db_result['personal_ids']) && $in_db_result['personal_ids']) {
                 $temp = $in_db_result['personal_ids'];
                 if (isset ($temp) && $temp) {
                     $tempAr = explode(',', $temp);
@@ -252,7 +257,7 @@ class CO_Security_Login extends CO_Security_Node {
      */
     public function load_from_db($in_db_result) {
         $ret = parent::load_from_db($in_db_result);
-        $this->_personal_ids = Array();
+        $this->_personal_ids = NULL;
         $this->_ids = Array($this->id());
                 
         if ($ret) {
@@ -294,7 +299,7 @@ class CO_Security_Login extends CO_Security_Node {
                 }
             }
                   
-            if (CO_Config::$use_personal_tokens && isset($in_db_result['personal_ids']) || isset($in_db_result['personal_ids'])) {
+            if (CO_Config::use_personal_tokens() && isset($in_db_result['personal_ids']) || isset($in_db_result['personal_ids'])) {
                 $temp = $in_db_result['personal_ids'];
                 if (isset ($temp) && $temp) {
                     $tempAr = explode(',', $temp);
@@ -534,31 +539,36 @@ class CO_Security_Login extends CO_Security_Node {
      */
     public function set_personal_ids(   $in_personal_ids = []    ///< An Array of Integers, with the new personal IDs. This replaces any previous ones. If empty, then the IDs are removed.
                                     ) {
-        $ret = [];
-        
-        if (CO_Config::$use_personal_tokens && $this->get_access_object()->god_mode()) {
-            $personal_ids_temp = array_unique($in_personal_ids);
-            $personal_ids = [];
-            // None of the ids can be in the regular IDs, and will be removed from the set, if so.
-            // They also cannot be anyone else's personal ID, or anyone's login ID. Personal IDs can ONLY be regular (non-login) security objects.
-            foreach($personal_ids_temp as $id) {
-                // Make sure that we don't have this personal token in our regular ID array.
-                if (($key = array_search($id, $this->_ids)) !== false) {
-                    unset($this->_ids[$key]);
-                }
-                if (!$this->get_access_object()->is_this_a_login_id($id) && (!$this->get_access_object()->is_this_a_personal_id($id) || in_array($id, $this->_personal_ids))) {
-                    array_push($personal_ids, $id);
-                }
-            }
-            sort($personal_ids);
-            $this->_personal_ids = $personal_ids;
+        $personal_ids_temp = array_unique(array_map('intval', $in_personal_ids));
             
-            if ($this->update_db()) {
-                return $this->_personal_ids;
+        $this->_personal_ids = [];
+        $access_object = $this->get_access_object();
+        
+echo("SET CALLED FOR \"$this->_id\":<pre>".htmlspecialchars(print_r($personal_ids_temp, true)).'</pre>');
+        if (CO_Config::use_personal_tokens() && isset($access_object) && $access_object->god_mode()) {
+            if (0 < count($personal_ids_temp)) {
+                $personal_ids = [];
+                $my_ids = $this->_ids;
+                // None of the ids can be in the regular IDs, and will be removed from the set, if so.
+                // They also cannot be anyone else's personal ID, or anyone's login ID. Personal IDs can ONLY be regular (non-login) security objects.
+                foreach($personal_ids_temp as $id) {
+                    // Make sure that we don't have this personal token in our regular ID array.
+                    if (($key = array_search($id, $my_ids)) !== false) {
+                        unset($my_ids[$key]);
+                    }
+                    if (!$this->get_access_object()->is_this_a_login_id($id) && (!$this->get_access_object()->is_this_a_personal_id($id) || in_array($id, $this->_personal_ids))) {
+                        array_push($personal_ids, $id);
+                    }
+                }
+                $this->_ids = $my_ids;
+                sort($personal_ids);
+                $this->_personal_ids = $personal_ids;
             }
         }
+            
+        $this->update_db();
         
-        return $ret;
+        return $this->_personal_ids;
     }
     
     /***********************/
@@ -568,7 +578,7 @@ class CO_Security_Login extends CO_Security_Node {
     \returns The current personal IDs.
      */
     public function personal_ids() {
-        if (!CO_Config::$use_personal_tokens) {
+        if (!CO_Config::use_personal_tokens()) {
             return [];
         }
         
@@ -576,10 +586,12 @@ class CO_Security_Login extends CO_Security_Node {
             return $this->_personal_ids;
         } else {
             $my_ids = $this->get_access_object()->get_security_ids();
-            $ret = Array();
-            foreach ($this->_personal_ids as $id) {
-                if (in_array($id, $my_ids)) {
-                    array_push($ret, $id);
+            $ret = [];
+            if (isset($this->_personal_ids) && is_array($this->_personal_ids) && count($this->_personal_ids)) {
+                foreach ($this->_personal_ids as $id) {
+                    if (in_array($id, $my_ids)) {
+                        array_push($ret, $id);
+                    }
                 }
             }
             return $ret;

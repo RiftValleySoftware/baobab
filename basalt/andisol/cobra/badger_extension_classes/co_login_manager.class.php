@@ -38,11 +38,12 @@ class CO_Login_Manager extends CO_Cobra_Login {
     /**
     The constructor.
      */
-	public function __construct(    $in_login_id = NULL,        ///< The login ID
-                                    $in_hashed_password = NULL, ///< The password, crypt-hashed
-                                    $in_raw_password = NULL     ///< The password, cleartext.
+	public function __construct(    $in_login_id = NULL,            ///< The login ID
+                                    $in_hashed_password = NULL,     ///< The password, crypt-hashed
+                                    $in_raw_password = NULL,        ///< The password, cleartext.
+                                    $in_initial_personal_ids = 0    /// This is the number of personal IDs to create and assign. It defaults to 0.
 	                            ) {
-        parent::__construct($in_login_id, $in_hashed_password, $in_raw_password);
+        parent::__construct($in_login_id, $in_hashed_password, $in_raw_password, $in_initial_personal_ids);
         $this->_added_new_id = NULL;
         $this->class_description = 'This is a security class for login managers.';
         if (intval($this->id()) == intval(CO_Config::god_mode_id())) {

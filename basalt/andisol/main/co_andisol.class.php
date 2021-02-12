@@ -1801,6 +1801,9 @@ class CO_Andisol {
         return $this->get_chameleon_instance()->make_new_blank_record($in_classname);
     }
     
+    /************************************************************************************************************************/    
+    /*                                                   PERSONAL ID METHODS                                                */
+    /************************************************************************************************************************/    
         
     /***********************/
     /**
@@ -1811,8 +1814,7 @@ class CO_Andisol {
     \returns an array of integers, with each one representing a personal security token.
      */
     public function get_personal_security_ids() {
-        $ret = Array();
-        return $ret;
+        return $this->get_chameleon_instance()->get_personal_security_ids();
     }
     
     /***********************/
@@ -1825,7 +1827,7 @@ class CO_Andisol {
      */
     public function get_all_personal_ids_except_for_id( $in_id = 0  ///< The integer ID of the row we want exempted. If not specified, then all IDs are returned.
                                                         ) {
-        return [];
+        return $this->get_chameleon_instance()->get_all_personal_ids_except_for_id($in_id);
     }
     
     /***********************/
@@ -1836,7 +1838,7 @@ class CO_Andisol {
      */
     public function is_this_a_personal_id(  $in_id  ///< The ID we are checking. Must be greater than 1.
                                             ) {
-        return false;
+        return $this->get_chameleon_instance()->is_this_a_personal_id($in_id);
     }
     
     /***********************/
@@ -1848,7 +1850,7 @@ class CO_Andisol {
     public function add_personal_token_from_current_login(  $in_to_id,  ///< The ID of the object we are affecting.
                                                             $in_id      ///< The ID (personal token) to be added.
                                                             ) {
-        return false;
+        return $this->get_chameleon_instance()->add_personal_token_from_current_login($in_to_id, $in_id);
     }
     
     /***********************/
@@ -1860,7 +1862,7 @@ class CO_Andisol {
     public function remove_personal_token_from_this_login(  $in_to_id,  ///< The ID of the object we are affecting.
                                                             $in_id      ///< The ID (personal token) to be removed.
                                                             ) {
-        return false;
+        return $this->get_chameleon_instance()->remove_personal_token_from_this_login($in_to_id, $in_id);
     }
     
     /***********************/
@@ -1870,6 +1872,6 @@ class CO_Andisol {
     \returns an associative array of arrays of integer, keyed by integer. The key is the ID of the login, and the value is an array of integer, with the IDs that match. NULL, if an error.
      */
     public function get_logins_that_have_any_of_my_ids() {
+        return $this->get_chameleon_instance()->get_logins_that_have_any_of_my_ids();
     }
-
 };
