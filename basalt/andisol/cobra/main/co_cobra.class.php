@@ -357,6 +357,27 @@ class CO_Cobra {
     
     /***********************/
     /**
+    This sets just the "personal" IDs for the given ID.
+    
+    This should only be called by the "God" admin, and will fail, otherwise (returns empty array).
+    
+    This is not an atomic operation. If any of the given IDs are also in the regular ID list, they will be removed from the personal IDs.
+    
+    \returns an array of integers, with the new personal security IDs (usually a copy of the input Array). It will be empty, if the procedure fails.
+     */
+    public function set_personal_ids(   $in_login_id,           ///< The ID of the login we want to modify.
+                                        $in_personal_ids = []   ///< An Array of Integers, with the new personal IDs. This replaces any previous ones. If empty, then the IDs are removed.
+                                    ) {
+        $target = $this->_chameleon_instance->get_login_item($in_login_id);
+        if (CO_Config::use_personal_tokens() && ($target instanceof CO_Security_Login) && $this->_chameleon_instance->god_mode()) {
+            return $target->set_personal_ids($in_personal_ids);
+        }
+        
+        return [];
+    }
+    
+    /***********************/
+    /**
     Creates a new "standalone" user that has no associated login instance.
     
     \returns the new user record.

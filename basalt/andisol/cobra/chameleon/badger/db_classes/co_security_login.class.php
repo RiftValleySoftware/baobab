@@ -540,11 +540,9 @@ class CO_Security_Login extends CO_Security_Node {
     public function set_personal_ids(   $in_personal_ids = []    ///< An Array of Integers, with the new personal IDs. This replaces any previous ones. If empty, then the IDs are removed.
                                     ) {
         $personal_ids_temp = array_unique(array_map('intval', $in_personal_ids));
-            
         $this->_personal_ids = [];
         $access_object = $this->get_access_object();
         
-echo("SET CALLED FOR \"$this->_id\":<pre>".htmlspecialchars(print_r($personal_ids_temp, true)).'</pre>');
         if (CO_Config::use_personal_tokens() && isset($access_object) && $access_object->god_mode()) {
             if (0 < count($personal_ids_temp)) {
                 $personal_ids = [];

@@ -62,6 +62,8 @@ class CO_Cobra_Login extends CO_Security_Login {
     This only sets the IDs, if the member property is NULL (just created).
     
     This is not an atomic operation. If any of the given IDs are also in the regular ID list, they will be removed from the personal IDs.
+    
+    \returns an array of integers, with the new personal security IDs (usually a copy of the input Array). It will be empty, if the procedure fails.
      */
     public function set_personal_ids(   $in_personal_ids = []   ///< An Array of Integers, with the new personal IDs. This replaces any previous ones. If empty, then the IDs are removed.
                                     ) {
@@ -88,6 +90,8 @@ class CO_Cobra_Login extends CO_Security_Login {
         } else {    // If we are not NULL, then we kick the can down the road.
             parent::set_personal_ids($in_personal_ids);
         }
+        
+        return $this->_personal_ids;
     }
 
     /***********************/

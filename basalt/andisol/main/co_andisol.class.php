@@ -283,7 +283,9 @@ class CO_Andisol {
         
         if ($this->logged_in()) {
             $ret = $this->get_chameleon_instance()->get_login_item($in_login_integer_id);
-            $this->error = $this->get_chameleon_instance()->error;
+            if (isset($this->get_chameleon_instance()->error)) {
+                $this->error = $this->get_chameleon_instance()->error;
+            }
         }
         
         return $ret;
@@ -304,7 +306,9 @@ class CO_Andisol {
         if ($this->logged_in()) {
             $ret = $this->get_chameleon_instance()->get_login_item_by_login_string($in_login_string_id);
         
-            $this->error = $this->get_chameleon_instance()->error;
+            if (isset($this->get_chameleon_instance()->error)) {
+                $this->error = $this->get_chameleon_instance()->error;
+            }
         }
         
         return $ret;
@@ -366,7 +370,9 @@ class CO_Andisol {
         
         if ($this->get_chameleon_instance()->can_i_see_this_data_record($in_id)) {
             $ret = $this->get_chameleon_instance()->get_data_access_class_by_id($in_id);
-            $this->error = $this->get_chameleon_instance()->error;
+            if (isset($this->get_chameleon_instance()->error)) {
+                $this->error = $this->get_chameleon_instance()->error;
+            }
         }
         
         return $ret;
@@ -383,7 +389,9 @@ class CO_Andisol {
     public function get_security_access_class_by_id(    $in_id  ///< This is the ID of the record to fetch.
                                                     ) {
         $ret = $this->$this->get_chameleon_instance()->get_security_access_class_by_id($in_id);
-        $this->error = $this->get_chameleon_instance()->error;
+        if (isset($this->get_chameleon_instance()->error)) {
+            $this->error = $this->get_chameleon_instance()->error;
+        }
         
         return $ret;
     }
@@ -507,7 +515,9 @@ class CO_Andisol {
                                     ) {
         $ret = $this->get_chameleon_instance()->generic_search($in_search_parameters, $or_search, $page_size, $initial_page, $and_writeable, $count_only, $ids_only);
         
-        $this->error = $this->get_chameleon_instance()->error;
+        if (isset($this->get_chameleon_instance()->error)) {
+            $this->error = $this->get_chameleon_instance()->error;
+        }
         
         return $ret;
     }
@@ -688,11 +698,11 @@ class CO_Andisol {
     
     \returns the new CO_Cobra_Login instance.
      */
-    public function create_new_standard_login(  $in_login_id,                   ///< The login ID as text. It needs to be unique, within the Security database, and this will fail, if it is not.
-                                                $in_cleartext_password,         ///< The password to set (in cleartext). It will be stored as a hashed password.
-                                                $in_security_token_ids = NULL   ///< An array of integers. These are security token IDs for the login (default is NULL). If NULL, then no IDs will be set. These IDs must be selected from those available to the currently logged-in manager.
+    public function create_new_standard_login(  $in_login_id,                           ///< The login ID as text. It needs to be unique, within the Security database, and this will fail, if it is not.
+                                                $in_cleartext_password,                 ///< The password to set (in cleartext). It will be stored as a hashed password.
+                                                $in_create_this_many_personal_ids = 0   ///< This is how many Personal tokens should be created and assigned. Default is 0.
                                             ) {
-        return $this->get_cobra_instance()->create_new_standard_login($in_login_id, $in_cleartext_password, $in_security_token_ids);
+        return $this->get_cobra_instance()->create_new_standard_login($in_login_id, $in_cleartext_password, $in_create_this_many_personal_ids);
     }
     
     /***********************/
@@ -702,11 +712,11 @@ class CO_Andisol {
     
     \returns the new CO_Login_Manager instance.
      */
-    public function create_new_manager_login(   $in_login_id,                   ///< The login ID as text. It needs to be unique, within the Security database, and this will fail, if it is not.
-                                                $in_cleartext_password,         ///< The password to set (in cleartext). It will be stored as a hashed password.
-                                                $in_security_token_ids = NULL   ///< An array of integers. These are security token IDs for the login (default is NULL). If NULL, then no IDs will be set. These IDs must be selected from those available to the currently logged-in manager.
+    public function create_new_manager_login(   $in_login_id,                           ///< The login ID as text. It needs to be unique, within the Security database, and this will fail, if it is not.
+                                                $in_cleartext_password,                 ///< The password to set (in cleartext). It will be stored as a hashed password.
+                                                $in_create_this_many_personal_ids = 0   ///< This is how many Personal tokens should be created and assigned. Default is 0.
                                             ) {
-        return $this->get_cobra_instance()->create_new_manager_login($in_login_id, $in_cleartext_password, $in_security_token_ids, true);
+        return $this->get_cobra_instance()->create_new_manager_login($in_login_id, $in_cleartext_password, $in_create_this_many_personal_ids);
     }
     
     /***********************/
@@ -718,12 +728,13 @@ class CO_Andisol {
     
     \returns a string, with the login password as cleartext (If an acceptable-length password is supplied in $in_password, that that is returned). If the operation failed, then NULL is returned.
      */
-    public function create_new_user(    $in_login_string_id,            ///< REQUIRED: The string login ID. It must be unique in the Security DB.
-                                        $in_password = NULL,            ///< OPTIONAL: A new password. It must be at least as long as the minimum password length. If not supplied, an auto-generated password is created and returned as the function return. If too short, then an auto-generated password is created.
-                                        $in_display_name = NULL,        ///< OPTIONAL: A string, representing the basic "display name" to be associated with the login and user collection. If not supplied, the $in_login_string_id is used.
-                                        $in_security_tokens = NULL,     ///< Any additional security tokens to apply to the new login. These must be a subset of the security tokens available to the logged-in manager. The God admin can set any tokens they want.
-                                        $in_read_security_id = NULL,    ///< An optional read security ID. If not supplied, then ID 1 (logged-in users) is set. The write security ID is always set to the ID of the login.
-                                        $is_manager = false             ///< If true (default is false), then the new user will be a CO_Login_Manager object.
+    public function create_new_user(    $in_login_string_id,                    ///< REQUIRED: The string login ID. It must be unique in the Security DB.
+                                        $in_password = NULL,                    ///< OPTIONAL: A new password. It must be at least as long as the minimum password length. If not supplied, an auto-generated password is created and returned as the function return. If too short, then an auto-generated password is created.
+                                        $in_display_name = NULL,                ///< OPTIONAL: A string, representing the basic "display name" to be associated with the login and user collection. If not supplied, the $in_login_string_id is used.
+                                        $in_security_tokens = NULL,             ///< Any additional security tokens to apply to the new login. These must be a subset of the security tokens available to the logged-in manager. The God admin can set any tokens they want.
+                                        $in_read_security_id = NULL,            ///< An optional read security ID. If not supplied, then ID 1 (logged-in users) is set. The write security ID is always set to the ID of the login.
+                                        $is_manager = false,                    ///< If true (default is false), then the new user will be a CO_Login_Manager object.
+                                        $in_create_this_many_personal_ids = 0   ///< This is how many Personal tokens should be created and assigned. Default is 0.
                                     ) {
         $ret = NULL;
         
@@ -737,13 +748,18 @@ class CO_Andisol {
                 }
             
                 if ($is_manager) {  // See if they want to create a manager, or a standard login.
-                    $login_item = $this->get_cobra_instance()->create_new_manager_login($in_login_string_id, $in_password, $in_security_tokens);
+                    $login_item = $this->get_cobra_instance()->create_new_manager_login($in_login_string_id, $in_password, $in_create_this_many_personal_ids);
                 } else {
-                    $login_item = $this->get_cobra_instance()->create_new_standard_login($in_login_string_id, $in_password, $in_security_tokens);
+                    $login_item = $this->get_cobra_instance()->create_new_standard_login($in_login_string_id, $in_password, $in_create_this_many_personal_ids);
                 }
                 
                 // Make sure we got what we expect.
                 if ($login_item instanceof CO_Security_Login) {
+                    // Set any provided security tokens.
+                    if (is_array($in_security_tokens) && count($in_security_tokens)) {
+                        $login_item->set_ids($in_security_tokens); 
+                    }
+                    
                     // Next, set the display name.
                     $display_name = $in_display_name;
                     if (!$display_name) {
@@ -947,8 +963,10 @@ class CO_Andisol {
         
         if ($this->manager()) { // Don't even bother unless we're a manager.
             $ret = $this->get_cobra_instance()->get_all_logins($and_write, $in_login_string_id, $in_login_integer_id);
-        
-            $this->error = $this->get_cobra_instance()->error;
+            
+            if (isset($this->get_cobra_instance()->error)) {
+                $this->error = $this->get_cobra_instance()->error;
+            }
         } else {
             $this->error = new LGV_Error(   CO_ANDISOL_Lang_Common::$andisol_error_code_user_not_authorized,
                                             CO_ANDISOL_Lang::$andisol_error_name_user_not_authorized,
@@ -999,7 +1017,9 @@ class CO_Andisol {
                                                     ) {
         $ret = $this->get_chameleon_instance()->get_multiple_data_records_by_id($in_id_array);
         
-        $this->error = $this->get_chameleon_instance()->error;
+        if (isset($this->get_chameleon_instance()->error)) {
+            $this->error = $this->get_chameleon_instance()->error;
+        }
 
         return $ret;
     }
@@ -1014,7 +1034,9 @@ class CO_Andisol {
                                                 ) {
         $ret = $this->get_chameleon_instance()->get_single_data_record_by_id($in_id);
         
-        $this->error = $this->get_chameleon_instance()->error;
+        if (isset($this->get_chameleon_instance()->error)) {
+            $this->error = $this->get_chameleon_instance()->error;
+        }
     
         return $ret;
     }
@@ -1055,7 +1077,9 @@ class CO_Andisol {
         
         if (isset($in_initial_item_ids) && is_array($in_initial_item_ids) && count($in_initial_item_ids) && isset($ret) && ($ret instanceof CO_Collection)) {
             $elements = $this->get_chameleon_instance()->get_multiple_data_records_by_id($in_initial_item_ids);
-            $this->error = $this->get_chameleon_instance()->error;
+            if (isset($this->get_chameleon_instance()->error)) {
+                $this->error = $this->get_chameleon_instance()->error;
+            }
             
             if (isset($elements) && is_array($elements) && count($elements) && !isset($this->error)) {
                 if (!$ret->appendElements($elements)) {
@@ -1084,7 +1108,9 @@ class CO_Andisol {
         
         if ($this->logged_in()) {
             $ret = $this->get_chameleon_instance()->delete_data_record($in_item_id_integer);
-            $this->error = $this->get_chameleon_instance()->error;
+            if (isset($this->get_chameleon_instance()->error)) {
+                $this->error = $this->get_chameleon_instance()->error;
+            }
         } else {
             $this->error = new LGV_Error(   CO_ANDISOL_Lang_Common::$andisol_error_code_user_not_authorized,
                                             CO_ANDISOL_Lang::$andisol_error_name_user_not_authorized,
@@ -1109,7 +1135,9 @@ class CO_Andisol {
         
         if ($this->valid()) {
             $ret = $this->get_chameleon_instance()->get_value_for_key($in_key, $in_classname);
-            $this->error = $this->get_chameleon_instance()->error;
+            if (isset($this->get_chameleon_instance()->error)) {
+                $this->error = $this->get_chameleon_instance()->error;
+            }
         }
         
         return $ret;
@@ -1168,7 +1196,9 @@ class CO_Andisol {
         
         if ($this->logged_in()) {
             $ret = $this->get_chameleon_instance()->set_value_for_key($in_key, $in_value, $in_classname);
-            $this->error = $this->get_chameleon_instance()->error;
+            if (isset($this->get_chameleon_instance()->error)) {
+                $this->error = $this->get_chameleon_instance()->error;
+            }
         } else {
             $this->error = new LGV_Error(   CO_ANDISOL_Lang_Common::$andisol_error_code_user_not_authorized,
                                             CO_ANDISOL_Lang::$andisol_error_name_user_not_authorized,
@@ -1819,6 +1849,22 @@ class CO_Andisol {
     
     /***********************/
     /**
+    This sets just the "personal" IDs for the given ID.
+    
+    This should only be called by the "God" admin, and will fail, otherwise (returns empty array).
+    
+    This is not an atomic operation. If any of the given IDs are also in the regular ID list, they will be removed from the personal IDs.
+    
+    \returns an array of integers, with the new personal security IDs (usually a copy of the input Array). It will be empty, if the procedure fails.
+     */
+    public function set_personal_ids(   $in_login_id,           ///< The ID of the login we want to modify.
+                                        $in_personal_ids = []   ///< An Array of Integers, with the new personal IDs. This replaces any previous ones. If empty, then the IDs are removed.
+                                    ) {
+        return $this->get_cobra_instance()->set_personal_ids($in_login_id, $in_personal_ids);
+    }
+    
+    /***********************/
+    /**
     This returns just the "personal" IDs for ALL logins, EXCEPT for the given ID.
     
     This should only be called from the ID fetcher in the access class, as it does not do a security predicate.
@@ -1832,6 +1878,17 @@ class CO_Andisol {
     
     /***********************/
     /**
+    This returns IDs that have personal IDs.
+    This only works for the God admin.
+    
+    \returns an associative array of arrays of integer, keyed by integer. The key is the ID of the login, and the value is an array of integer, with the Personal IDs that match. NULL, if an error.
+     */
+    public function get_logins_with_personal_ids() {
+        return $this->get_chameleon_instance()->get_logins_with_personal_ids();
+    }
+        
+    /***********************/
+    /**
     This checks an ID, to see if it is a personal ID.
     
     \returns true, if the ID is a personal ID.
@@ -1840,7 +1897,18 @@ class CO_Andisol {
                                             ) {
         return $this->get_chameleon_instance()->is_this_a_personal_id($in_id);
     }
+            
+    /***********************/
+    /**
+    This checks an ID, to see if it is a login ID.
     
+    \returns true, if the ID is a login ID.
+     */
+    public function is_this_a_login_id( $in_id  ///< The ID we are checking. Must be greater than 1.
+                                            ) {
+        return $this->get_chameleon_instance()->is_this_a_login_id($in_id);
+    }
+        
     /***********************/
     /**
     This adds a personal token from one ID's pool, to the regular ID pool of another ID.

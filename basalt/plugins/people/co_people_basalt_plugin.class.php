@@ -73,7 +73,14 @@ class CO_people_Basalt_Plugin extends A_CO_Basalt_Plugin {
         $ret['login_id'] = $in_login_object->login_id;
         $ret['is_manager'] = $in_login_object->is_manager();
         $ret['is_main_admin'] = $in_login_object->is_god();
-        $ret['security_tokens'] = $in_login_object->get_access_object()->god_mode() && $in_login_object->is_god() ? $in_login_object->get_access_object()->get_all_tokens() : $in_login_object->ids();
+        $security_tokens = $in_login_object->get_access_object()->god_mode() && $in_login_object->is_god() ? $in_login_object->get_access_object()->get_all_tokens() : $in_login_object->ids();
+        if (isset($security_tokens) && is_array($security_tokens) && count($security_tokens)) {
+            $ret['security_tokens'] = $security_tokens;
+        }
+        $personal_tokens = $in_login_object->personal_ids();
+        if (isset($personal_tokens) && is_array($personal_tokens) && count($personal_tokens)) {
+            $ret['personal_tokens'] = $personal_tokens;
+        }
         
         $api_key = $in_login_object->get_api_key();
         $key_age = $in_login_object->get_api_key_age_in_seconds();
@@ -247,7 +254,7 @@ class CO_people_Basalt_Plugin extends A_CO_Basalt_Plugin {
             }
         } else {    // They want the list of all of them.
             $login_id_list = $in_andisol_instance->get_all_login_users();
-            if ($is_manager) {
+            if ($in_andisol_instance->manager()) {
                 $login_id_list = $in_andisol_instance->get_all_logins();
                 if (0 < count($login_id_list)) {
                     foreach ($login_id_list as $login_instance) {
@@ -707,7 +714,143 @@ class CO_people_Basalt_Plugin extends A_CO_Basalt_Plugin {
         
         return $ret;
     }
+
+    /***********************/
+    /**
+    This handles personal tokens.
+    
+    \returns an array, with the results.
+     */
+    protected function _handle_personal_ids(    $in_andisol_instance,   ///< REQUIRED: The ANDISOL instance to use as the connection to the RVP databases.
+                                                $in_path = [],          ///< OPTIONAL: The REST path, as an array of strings.
+                                                $in_query = []          ///< OPTIONAL: The query parameters, as an associative array.
+                                            ) {
+        $ret = [];
+        $my_info = isset($in_path) && is_array($in_path) && (0 < count($in_path) && ('my_info' == $in_path[0]) && $in_andisol_instance->logged_in());    // This is a directory that specifies only our own user.
+        if ($my_info) {
+            $tokens = $in_andisol_instance->get_personal_security_ids();
+            if (isset($tokens) && is_array($tokens) && count($tokens)) {
+                $ret['my_info']['tokens'] = $tokens;
+            }
             
+            $user_list = $in_andisol_instance->get_logins_that_have_any_of_my_ids();
+            $ret_temp = [];
+            foreach ($user_list as $key => $value) {
+                $ret_temp[] = ["id" => $key, "tokens" => $value];
+            }
+            if (count($ret_temp)) {
+                $ret['my_info']['personal_token_users'] = $ret_temp;
+            }
+        } elseif ($in_andisol_instance->god()) {
+            $all_logins = $in_andisol_instance->get_all_logins();
+            
+            if (isset($all_logins) && is_array($all_logins) && count($all_logins)) {
+                $ret_temp = [];
+                foreach ($all_logins as $login) {
+                    $tokens = $login->personal_ids();
+                    if (isset($tokens) && is_array($tokens) && count($tokens)) {
+                        $ret_temp[] = ["id" => $login->id(), "tokens" => $tokens];
+                    }
+                }
+                $ret = ["personal_token_users" => $ret_temp];
+            }
+        } else {
+            header('HTTP/1.1 403 Not Permitted');   // Ah-Ah-Aaaahh! You didn't say the magic word!
+            exit();
+        }
+        
+        return $ret;
+    }
+
+    /***********************/
+    /**
+    This handles the edit (POST, PUT and DELETE) functions for personal tokens.
+    
+    \returns an array, with the results.
+     */
+    protected function _handle_edit_personal_ids(   $in_andisol_instance,       ///< REQUIRED: The ANDISOL instance to use as the connection to the RVP databases.
+                                                    $in_http_method,            ///< REQUIRED: 'POST', 'PUT' or 'DELETE'
+                                                    $in_path = [],              ///< OPTIONAL: The REST path, as an array of strings.
+                                                    $in_query = []              ///< OPTIONAL: The query parameters, as an associative array.
+                                        ) {
+        $ret = [];
+        
+        if ('PUT' == $in_http_method) {
+            if (isset($in_path) && is_array($in_path) && (0 < count($in_path)) && trim($in_path[0])) {
+                $token_list = array_map('intval', explode(",",trim($in_path[0])));
+            }
+            if (isset($in_query) && is_array($token_list) && count($token_list)) {
+                // Assign tokens directly to a user. This can only be done by the God Admin, and it completely replaces all the personal tokens of that user.
+                if (is_array($in_query) && isset($in_query['set_user_tokens']) && $in_query['set_user_tokens'] && $in_andisol_instance->god()) {
+                    $user_id = intval($in_query['set_user_tokens']);
+                    $tokens = $in_andisol_instance->set_personal_ids($user_id, $token_list);
+                    
+                    if (count($tokens)) {
+                        $ret['set_user_tokens'] = ['id' => $user_id, 'tokens' => $tokens];
+                    }
+                // Assign tokens from our pool, to another user.
+                } elseif (is_array($in_query) && isset($in_query['assign_tokens_to_user'])) {
+                    $results = [];
+                    $user_ids = array_map('intval', explode(",", $in_query['assign_tokens_to_user']));
+                    
+                    foreach($user_ids as $user_id) {
+                        $ret_temp2 = [];
+                        foreach ($token_list as $token) {
+                            if ($in_andisol_instance->add_personal_token_from_current_login($user_id, $token)) {
+                                $ret_temp2[] = $token;
+                            }
+                        }
+                        if (count($ret_temp2)) {
+                            $ret_temp[] = ["id" => $user_id, "tokens" => $ret_temp2];
+                        }
+                    }
+                    
+                    $ret['assign_tokens_to_user'] = $ret_temp;
+                // Remove one or more of our tokens from another user.
+                } elseif (is_array($in_query) && isset($in_query['remove_tokens_from_user']) && isset($in_query['remove_tokens_from_user'])) {
+                    $ret_temp = [];
+                    $user_id = intval($in_query['remove_tokens_from_user']);
+                    
+                    foreach ($token_list as $token) {
+                        if ($in_andisol_instance->remove_personal_token_from_this_login($user_id, $token)) {
+                            $ret_temp[] = $token;
+                        }
+                    }
+                    
+                    $ret['remove_tokens_from_user'] = ['id' => $user_id, 'tokens' => $ret_temp];
+                // Remove one or more of our tokens, from all other users that have the token.
+                } elseif (is_array($in_query) && isset($in_query['remove_all_these_tokens_from_all_users']) && isset($in_query['remove_all_these_tokens_from_all_users'])) {
+                    $user_list = $in_andisol_instance->get_logins_that_have_any_of_my_ids();
+                    $ret_temp = [];
+                    foreach ($user_list as $user_id => $token_list) {
+                        $ret_temp2 = [];
+                        foreach ($token_list as $token) {
+                            if ($in_andisol_instance->remove_personal_token_from_this_login($user_id, $token)) {
+                                $ret_temp2[] = $token;
+                            }
+                        }
+                        if (count($ret_temp2)) {
+                            $ret_temp[] = ["id" => $user_id, "tokens" => $ret_temp2];
+                        }
+                    }
+                    
+                    $ret = ["remove_all_these_tokens_from_all_users" => $ret_temp];
+                } else {
+                    header('HTTP/1.1 400 Incorrect Command Structure');
+                    exit();
+                }
+            } else {
+                header('HTTP/1.1 400 No Personal IDs');
+                exit();
+            }
+        } else {
+            header('HTTP/1.1 400 Incorrect HTTP Request Method');
+            exit();
+        }
+        
+        return $ret;
+    }
+                
     /***********************/
     /**
     This builds a list of the requested parameters for the login edit operation.
@@ -1390,7 +1533,11 @@ class CO_people_Basalt_Plugin extends A_CO_Basalt_Plugin {
         $settings_list = $this->_build_user_mod_list($in_andisol_instance, 'POST', $in_query);   // First, build up a list of the settings for the new user.
 
         if ($in_login_user) {  // Create a user/login pair.
-            $password = $in_andisol_instance->create_new_user($login_id, $password, $name, $tokens, 0, $is_manager);
+            // The number of personal tokens to initialize with the login.
+            // If this is not specified, it is zero. Also, it only applies to new logins; not users.
+            $number_of_personal_tokens = (isset($in_query['number_of_personal_tokens']) && trim($in_query['number_of_personal_tokens'])) ? intval(trim($in_query['number_of_personal_tokens'])) : 0;
+
+            $password = $in_andisol_instance->create_new_user($login_id, $password, $name, $tokens, 0, $is_manager, $number_of_personal_tokens);
         
             if ($password) {
                 $user = $in_andisol_instance->get_user_from_login_string($login_id);
@@ -1542,7 +1689,7 @@ class CO_people_Basalt_Plugin extends A_CO_Basalt_Plugin {
             $show_details = true;
         }
         
-        if (isset($in_query['get_all_visible_users'])) {    // The first thing we check for, is to see if this is a simple request to return the IDs and names of all visible users.
+        if (isset($in_query['get_all_visible_users'])) {    // The next thing we check for, is to see if this is a simple request to return the IDs and names of all visible users.
             $ret['get_all_visible_users'] = $in_andisol_instance->get_all_visible_users();
         } elseif (isset($in_query['get_all_visible_logins'])) { // The next thing we check for, is to see if this is a simple request to return the IDs, names, and login ID of all visible logins.
             $ret['get_all_visible_logins'] = $in_andisol_instance->get_all_visible_logins();
@@ -1721,7 +1868,7 @@ class CO_people_Basalt_Plugin extends A_CO_Basalt_Plugin {
         
         return $ret;
     }
-        
+    
     /***********************/
     /**
     \returns a string, with our plugin name.
@@ -1753,14 +1900,12 @@ class CO_people_Basalt_Plugin extends A_CO_Basalt_Plugin {
                                         $in_query = []              ///< OPTIONAL: The query parameters, as an associative array.
                                     ) {
         $ret = [];
-        $show_parents = isset($in_query) && is_array($in_query) && isset($in_query['show_parents']);    // Show all places in detail, as well as the parents (applies only to GET or DELETE).
-        
-        // For the default (no user ID), we simply return a list of commands. We also only allow GET to do this.
+        // For the default (no user ID, login or personal ID), we simply return a list of commands. We also only allow GET to do this.
         if (0 == count($in_path)) {
             if ('GET' == $in_http_method) {
                 $ret = ['people'];
                 if ($in_andisol_instance->logged_in()) {
-                    $ret[] = 'logins';
+                    $ret[] = ['logins', 'personal_tokens'];
                 }
             } else {
                 header('HTTP/1.1 400 Incorrect HTTP Request Method');
@@ -1768,7 +1913,10 @@ class CO_people_Basalt_Plugin extends A_CO_Basalt_Plugin {
             }
         } else {
             $main_command = $in_path[0];    // Get the main command.
+            $show_parents = isset($in_query) && is_array($in_query) && isset($in_query['show_parents']);    // Show all users/logins in detail, as well as the parents (applies only to GET or DELETE, and not for personal tokens).
+        
             array_shift($in_path);
+            
             switch (strtolower($main_command)) {
                 case 'people':
                     if ('GET' == $in_http_method) {
@@ -1785,6 +1933,13 @@ class CO_people_Basalt_Plugin extends A_CO_Basalt_Plugin {
                         $ret['logins'] = $this->_handle_logins($in_andisol_instance, $in_path, $in_query);
                     } else {
                         $ret['logins'] = $this->_handle_edit_logins($in_andisol_instance, $in_http_method, $in_path, $in_query, $show_parents);
+                    }
+                    break;
+                case 'personal_tokens':
+                    if ('GET' == $in_http_method) {
+                        $ret['personal_tokens'] = $this->_handle_personal_ids($in_andisol_instance, $in_path, $in_query);
+                    } else {
+                        $ret['personal_tokens'] = $this->_handle_edit_personal_ids($in_andisol_instance, $in_http_method, $in_path, $in_query);
                     }
                     break;
             }
