@@ -428,19 +428,20 @@ class CO_people_Basalt_Plugin extends A_CO_Basalt_Plugin {
                         $password = substr(str_shuffle("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), 0, CO_Config::$min_pw_len + 2);
                     }
                 
-                    $tokens = isset($params['tokens']) ? $params['tokens'] : NULL;
+                    $number_of_personal_tokens = (isset($in_query['number_of_personal_tokens']) && trim($in_query['number_of_personal_tokens'])) ? intval(trim($in_query['number_of_personal_tokens'])) : 0;
                 
                     if ($is_manager) {
-                        $new_login = $in_andisol_instance->create_new_manager_login($login_string, $password, $tokens);
+                        $new_login = $in_andisol_instance->create_new_manager_login($login_string, $password, $number_of_personal_tokens);
                     } else {
-                        $new_login = $in_andisol_instance->create_new_standard_login($login_string, $password, $tokens);
+                        $new_login = $in_andisol_instance->create_new_standard_login($login_string, $password, $number_of_personal_tokens);
                     }
-                
+                    
                     if ($new_login instanceof CO_Security_Login) {
                         if ($lang) {
                             $result = $new_login->set_lang($lang);
                         }
                         
+                        $tokens = isset($params['tokens']) ? $params['tokens'] : NULL;
                         $id = $new_login->id();
                         
                         // If we did not have a name sent in, then we simply use the login ID.
@@ -450,6 +451,10 @@ class CO_people_Basalt_Plugin extends A_CO_Basalt_Plugin {
                             $result = $new_login->set_name($login_string);
                         }
                 
+                        if (isset($tokens) && is_array($tokens) && count($tokens)) {
+                            $new_login->set_ids($tokens);
+                        }
+                        
                         if (!$result) {
                             header('HTTP/1.1 400 Error Creating Login');
                             exit();
@@ -558,6 +563,7 @@ class CO_people_Basalt_Plugin extends A_CO_Basalt_Plugin {
         $read_token = NULL;
         $write_token = NULL;
         $tokens = NULL;
+        $personal_tokens = NULL;
         $convert_to_manager = NULL;
         $convert_to_login = NULL;
         
@@ -597,6 +603,12 @@ class CO_people_Basalt_Plugin extends A_CO_Basalt_Plugin {
         
         if (isset($params['tokens'])) {
             $tokens = array_filter(array_map('intval', $params['tokens']), function($i) { return intval($i) > 0; } );
+            sort($tokens);
+        }
+        
+        if (isset($params['personal_tokens'])) {
+            $personal_tokens = array_filter(array_map('intval', $params['personal_tokens']), function($i) { return intval($i) > 0; } );
+            sort($personal_tokens);
         }
         
         foreach ($in_logins_to_edit as $login_instance) {
@@ -623,7 +635,15 @@ class CO_people_Basalt_Plugin extends A_CO_Basalt_Plugin {
                     $login_changed = true;
                 }
             }
-                            
+            
+            // Only God can set personal tokens.
+            if (isset($personal_tokens) && $in_andisol_instance->god()) {
+                $result = $login_instance->set_personal_ids($personal_tokens);
+                if ($result) {
+                    $login_changed = true;
+                }
+            }
+            
             // This is a rare and special occasion. The login change may fail, as it's possible to assign a login that already exists.
             // Additionally, this will only apply to the FIRST login encountered, as, by definition, login strings are unique.
             if ($login_string) {
@@ -863,9 +883,14 @@ class CO_people_Basalt_Plugin extends A_CO_Basalt_Plugin {
         $ret = [];   // We will build up an associative array of changes we want to make.
         
         if (isset($in_query) && is_array($in_query) && count($in_query)) {
-
+            // These are the regular security tokens.
             if (isset($in_query['tokens'])) {
                 $ret['tokens'] = array_map('intval', explode(',', $in_query['tokens']));
+            }
+            
+            // Personal tokens can only be modified by God
+            if (isset($in_query['personal_tokens']) && $in_andisol_instance->god()) {
+                $ret['personal_tokens'] = array_map('intval', explode(',', $in_query['personal_tokens']));
             }
             
             // Next, we see if we want to change the password.
@@ -1168,6 +1193,20 @@ class CO_people_Basalt_Plugin extends A_CO_Basalt_Plugin {
                         
                                     if ($login_instance) {
                                         $result = $login_instance->set_ids($value);
+                                        $user_changed = true;
+                                    }
+                                } else {
+                                    header('HTTP/1.1 400 Improper Data Provided');
+                                    exit();
+                                }
+                                break;
+                            
+                            case 'personal_tokens':
+                                if ($in_login_user && $in_andisol_instance->god()) {  // Can only do this, if the caller explicitly requested a login user, and we are a God.
+                                    $login_instance = $user->get_login_instance();
+                        
+                                    if ($login_instance) {
+                                        $result = $login_instance->set_personal_ids($value);
                                         $user_changed = true;
                                     }
                                 } else {
