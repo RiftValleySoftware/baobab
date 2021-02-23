@@ -391,7 +391,13 @@ class CO_Basalt extends A_CO_Basalt_Plugin {
             ob_start($handler);
         }
         
-        echo($result);
+        if (is_array($result)) {
+            foreach ($result as $element) {
+                echo($element);
+            }
+        } else {
+            echo($result);
+        }
         
         if ($use_ob) {
 		    ob_end_flush();

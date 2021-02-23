@@ -375,10 +375,10 @@ class CO_people_Basalt_Plugin extends A_CO_Basalt_Plugin {
         
         $lang = NULL;
         $name = NULL;
-        $read_token = nil;
+        $read_token = NULL;
         
         if ($in_andisol_instance->manager()) {  // Must be a manager
-            $write_token = nil;
+            $write_token = NULL;
             $is_manager = isset($in_query) && is_array($in_query) && isset($in_query['is_manager']);
             if (isset($in_query['is_manager'])) {
                 unset($in_query['is_manager']);
@@ -639,7 +639,7 @@ class CO_people_Basalt_Plugin extends A_CO_Basalt_Plugin {
             // Only God can set personal tokens.
             if (isset($personal_tokens) && $in_andisol_instance->god()) {
                 $result = $login_instance->set_personal_ids($personal_tokens);
-                if ($result) {
+                if ($result || !$personal_tokens || !count($personal_tokens)) {
                     $login_changed = true;
                 }
             }
@@ -717,7 +717,7 @@ class CO_people_Basalt_Plugin extends A_CO_Basalt_Plugin {
                 }
             }
             
-            if (!$result) {
+            if (!$login_changed) {
                 header('HTTP/1.1 400 Error Modifying Login');
                 exit();
             }
@@ -755,8 +755,10 @@ class CO_people_Basalt_Plugin extends A_CO_Basalt_Plugin {
             
             $user_list = $in_andisol_instance->get_logins_that_have_any_of_my_ids();
             $ret_temp = [];
-            foreach ($user_list as $key => $value) {
-                $ret_temp[] = ["id" => $key, "tokens" => $value];
+            if (is_array($user_list) && count($user_list)) {
+                foreach ($user_list as $key => $value) {
+                    $ret_temp[] = ["id" => $key, "tokens" => $value];
+                }
             }
             if (count($ret_temp)) {
                 $ret['my_info']['personal_token_users'] = $ret_temp;
@@ -886,11 +888,16 @@ class CO_people_Basalt_Plugin extends A_CO_Basalt_Plugin {
             // These are the regular security tokens.
             if (isset($in_query['tokens'])) {
                 $ret['tokens'] = array_map('intval', explode(',', $in_query['tokens']));
+                sort($ret['tokens']);
+                if (1 == $ret['tokens'][0]) {  // Just in case the knucklehead sent the "all logged in" token.
+                    array_shift($ret['tokens']);
+                }
             }
             
             // Personal tokens can only be modified by God
             if (isset($in_query['personal_tokens']) && $in_andisol_instance->god()) {
                 $ret['personal_tokens'] = array_map('intval', explode(',', $in_query['personal_tokens']));
+                sort($ret['personal_tokens']);
             }
             
             // Next, we see if we want to change the password.
