@@ -1970,7 +1970,11 @@ class CO_people_Basalt_Plugin extends A_CO_Basalt_Plugin {
                     } elseif ($in_andisol_instance->logged_in()) {  // Must be logged in to be non-GET.
                         $ret['people'] = $this->_handle_edit_people($in_andisol_instance, $in_http_method, $in_path, $in_query, $show_parents);
                     } else {
-                        header('HTTP/1.1 400 Incorrect HTTP Request Method');
+                        if (!$in_andisol_instance->logged_in()) {
+                            header('HTTP/1.1 403 Unauthorized');
+                        } else {
+                            header('HTTP/1.1 400 Incorrect HTTP Request Method');
+                        }
                         exit();
                     }
                     break;
